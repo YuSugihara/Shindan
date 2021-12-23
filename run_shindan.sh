@@ -292,18 +292,23 @@ function get_hmmscan_fasta() {
     ISOFORM_LIST=$1
     COOKSCUTOFF=$2
 
-    if [ ${COOKSCUTOFF} = "TRUE" ]
+    if [ `cat ${ISOFORM_LIST} | wc -l` -gt 0 ]
     then
 
-        samtools faidx -r ${ISOFORM_LIST}
-                          ${OUT_DIR}/10_trinity/assembly.Trinity.fasta \
-                        > ${OUT_DIR}/60_fasta/${PFAM_ID}.fasta
+        if [ ${COOKSCUTOFF} = "TRUE" ]
+        then
 
-    else
+            samtools faidx -r ${ISOFORM_LIST}
+                            ${OUT_DIR}/10_trinity/assembly.Trinity.fasta \
+                            > ${OUT_DIR}/60_fasta/${PFAM_ID}.fasta
 
-        samtools faidx -r ${ISOFORM_LIST}
-                          ${OUT_DIR}/10_trinity/assembly.Trinity.fasta \
-                        > ${OUT_DIR}/60_fasta/${PFAM_ID}.cooksCutoff_FALSE.fasta
+        else
+
+            samtools faidx -r ${ISOFORM_LIST}
+                            ${OUT_DIR}/10_trinity/assembly.Trinity.fasta \
+                            > ${OUT_DIR}/60_fasta/${PFAM_ID}.cooksCutoff_FALSE.fasta
+
+        fi
 
     fi
 
