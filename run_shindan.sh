@@ -5,7 +5,7 @@
 OUT_DIR=$1
 FASTQ_LIST=$2
 PVALUE=$3
-HMM_MODEL=$4
+PFAM_ID_FILE=$4
 N_THREADS=$5
 MAX_MEMORY=$6
 SS_LIB_TYPE=$7
@@ -25,7 +25,7 @@ mkdir -p ${OUT_DIR}/00_fastq
 
 cd ${OUT_DIR}/00_fastq
 
-if [ ${ADAPTER_FASTA} = "None" ]
+if [ ${ADAPTER_FASTA} = "Default_fasta" ]
 then
 
     wget adapter.fasta
@@ -273,6 +273,20 @@ get_significant_list "isoform" "FALSE"
 
 get_significant_fasta "TRUE"
 get_significant_fasta "FALSE"
+
+
+if [ ${ADAPTER_FASTA} = "Default_fasta" ]
+then
+
+    wget adapter.fasta
+    ADAPTER_FASTA=${OUT_DIR}/00_fastq/adapter.fasta
+
+fi
+
+
+PFAM_ID=PF00680
+wget https://pfam.xfam.org/family/${PFAM_ID}/hmm -O ${PFAM_ID}.hmm
+
 
 
 mv ${SCRIPT_DIR}/run_vidkit.sh ${OUT_DIR}
