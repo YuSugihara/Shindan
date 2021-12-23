@@ -28,7 +28,9 @@ cd ${OUT_DIR}/00_fastq
 if [ ${ADAPTER_FASTA} = "Default_fasta" ]
 then
 
-    wget adapter.fasta
+    wget https://raw.githubusercontent.com/YuSugihara/Shindan/master/adapters.fasta \
+         -O ${OUT_DIR}/00_fastq/adapter.fasta
+
     ADAPTER_FASTA=${OUT_DIR}/00_fastq/adapter.fasta
 
 fi
