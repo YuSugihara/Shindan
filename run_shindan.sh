@@ -122,7 +122,7 @@ Trinity --seqType fq \
         --max_memory ${MAX_MEMORY} \
         --left ${TRINITY_LEFT} \
         --right ${TRINITY_RIGHT} \
-        --output ${OUT_DIR}/10_trinity/infected_sample \
+        --output ${OUT_DIR}/10_trinity/assembly \
         --SS_lib_type ${SS_LIB_TYPE} \
         --CPU ${N_THREADS} \
         --full_cleanup
@@ -133,8 +133,8 @@ mkdir -p ${OUT_DIR}/20_estimate_abundance
 cd ${OUT_DIR}/20_estimate_abundance
 
 
-align_and_estimate_abundance.pl --transcripts ${OUT_DIR}/10_trinity/infected_sample.Trinity.fasta \
-                                --gene_trans_map ${OUT_DIR}/10_trinity/infected_sample.Trinity.fasta.gene_trans_map \
+align_and_estimate_abundance.pl --transcripts ${OUT_DIR}/10_trinity/assembly.Trinity.fasta \
+                                --gene_trans_map ${OUT_DIR}/10_trinity/assembly.Trinity.fasta.gene_trans_map \
                                 --seqType fq \
                                 --samples_file ${OUT_DIR}/00_fastq/fastq_list_for_DEG.txt \
                                 --SS_lib_type FR \
@@ -153,7 +153,7 @@ cd ${OUT_DIR}/30_count_matrix
 
 
 abundance_estimates_to_matrix.pl --est_method RSEM \
-                                 --gene_trans_map ${OUT_DIR}/10_trinity/infected_sample.Trinity.fasta.gene_trans_map \
+                                 --gene_trans_map ${OUT_DIR}/10_trinity/assembly.Trinity.fasta.gene_trans_map \
                                  --name_sample_by_basedir \
                                  --out_prefix RSEM \
                                  ${OUT_DIR}/20_estimate_abundance/*/RSEM.isoforms.results
@@ -249,7 +249,7 @@ function get_significant_fasta() {
     PREFIX=`get_prefix isoform ${COOKSCUTOFF}`
 
     samtools faidx -r ${PREFIX}.significant_${DATA_TYPE}s
-                      ${OUT_DIR}/10_trinity/infected_sample.Trinity.fasta \
+                      ${OUT_DIR}/10_trinity/assembly.Trinity.fasta \
                     > ${PREFIX}.significant_${DATA_TYPE}s.fasta
 
     esl-translate ${PREFIX}.significant_${DATA_TYPE}s.fasta \
@@ -281,13 +281,13 @@ function get_hmmscan_fasta() {
     then
 
         samtools faidx -r ${ISOFORM_LIST}
-                          ${OUT_DIR}/10_trinity/infected_sample.Trinity.fasta \
+                          ${OUT_DIR}/10_trinity/assembly.Trinity.fasta \
                         > ${OUT_DIR}/60_fasta/${PFAM_ID}.fasta
 
     else
 
         samtools faidx -r ${ISOFORM_LIST}
-                          ${OUT_DIR}/10_trinity/infected_sample.Trinity.fasta \
+                          ${OUT_DIR}/10_trinity/assembly.Trinity.fasta \
                         > ${OUT_DIR}/60_fasta/${PFAM_ID}.cooksCutoff_FALSE.fasta
 
     fi
