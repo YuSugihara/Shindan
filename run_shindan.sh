@@ -5,7 +5,7 @@
 OUT_DIR=$1
 FASTQ_LIST=$2
 PVALUE=$3
-PFAM_ID_FILE=$4
+PFAM_ID_LIST=$4
 N_THREADS=$5
 MAX_MEMORY=$6
 SS_LIB_TYPE=$7
@@ -204,7 +204,7 @@ function get_prefix() {
     DATA_TYPE=$1
     COOKSCUTOFF=$2
 
-    if [ ${SAMPLE_TYPE} = "TRUE" ]
+    if [ ${COOKSCUTOFF} = "TRUE" ]
     then
 
         DIR_PREFIX=${OUT_DIR}/40_DEGseq2/DEGseq2_${DATA_TYPE}_result
@@ -251,8 +251,45 @@ function get_significant_fasta() {
                       ${OUT_DIR}/10_trinity/infected_sample.Trinity.fasta \
                     > ${PREFIX}.significant_${DATA_TYPE}s.fasta
 
-    esl-translate ${PREFIX}.significant_${DATA_TYPE}s.fasta 
-                > ${PREFIX}.significant_${DATA_TYPE}s.AA.fasta
+    esl-translate ${PREFIX}.significant_${DATA_TYPE}s.fasta \
+    sed "s/\ source\=/-/g" > ${PREFIX}.significant_${DATA_TYPE}s.AA.fasta
+
+}
+
+
+function get_hmmscan_list() {
+
+    HMMSCAN_RESULT=$1
+
+    cat ${HMMSCAN_RESULT} | \
+    grep -v "#" | \
+    awk '{print $3}' | \
+    ut -f 2 -d "-" | \
+    sort | \
+    uniq
+
+}
+
+
+function get_hmmscan_fasta() {
+
+    ISOFORM_LIST=$1
+    COOKSCUTOFF=$2
+
+    if [ ${COOKSCUTOFF} = "TRUE" ]
+    then
+
+        samtools faidx -r ${ISOFORM_LIST}
+                          ${OUT_DIR}/10_trinity/infected_sample.Trinity.fasta \
+                        > ${OUT_DIR}/60_fasta/${PFAM_ID}.fasta
+
+    else
+
+        samtools faidx -r ${ISOFORM_LIST}
+                          ${OUT_DIR}/10_trinity/infected_sample.Trinity.fasta \
+                        > ${OUT_DIR}/60_fasta/${PFAM_ID}.cooksCutoff_FALSE.fasta
+
+    fi
 
 }
 
@@ -261,6 +298,8 @@ export make_cooksCutoff_FALSE
 export get_prefix
 export get_significant_list
 export get_significant_fasta
+export get_hmmscan_list
+export get_hmmscan_fasta
 
 
 make_cooksCutoff_FALSE "gene" 
@@ -277,18 +316,61 @@ get_significant_fasta "TRUE"
 get_significant_fasta "FALSE"
 
 
-if [ ${ADAPTER_FASTA} = "Default_fasta" ]
+mkdir -p ${OUT_DIR}/50_hmmer
+mkdir -p ${OUT_DIR}/60_fasta
+
+cd ${OUT_DIR}/50_hmmer
+
+
+if [ ${ADAPTER_FASTA} = "Default_list" ]
 then
 
-    wget adapter.fasta
-    ADAPTER_FASTA=${OUT_DIR}/00_fastq/adapter.fasta
+    wget https://raw.githubusercontent.com/YuSugihara/Shindan/master/Pfam_IDs_list.txt
+
+    PFAM_ID_LIST=${OUT_DIR}/50_hmmer/Pfam_IDs_list.txt
 
 fi
 
 
-PFAM_ID=PF00680
-wget https://pfam.xfam.org/family/${PFAM_ID}/hmm -O ${PFAM_ID}.hmm
+while read PFAM_ID || [ -n "${PFAM_ID}" ]
+do
 
+    wget https://pfam.xfam.org/family/${PFAM_ID}/hmm \
+         -O ${PFAM_ID}.hmm
+
+
+    hmmpress ${PFAM_ID}.hmm
+
+
+    PREFIX=`get_prefix isoform TRUE`
+
+    hmmscan  --cpu ${N_THREADS} \
+             --tblout ${PFAM_ID}_hmmscan.txt \
+             ${PFAM_ID}.hmm \
+             ${PREFIX}.significant_isoforms.AA.fasta \
+             1> /dev/null
+
+
+    get_hmmscan_list ${PFAM_ID}_hmmscan.txt \
+                   > ${PFAM_ID}_hmmscan.isoform_list.txt
+
+    get_hmmscan_fasta ${PFAM_ID}_hmmscan.isoform_list.txt "TRUE"
+
+
+    PREFIX=`get_prefix isoform FALSE`
+
+    hmmscan  --cpu ${N_THREADS} \
+             --tblout ${PFAM_ID}_cooksCutoff_FALSE_hmmscan.txt \
+             ${PFAM_ID}.hmm \
+             ${PREFIX}.significant_isoforms.AA.fasta \
+             1> /dev/null
+
+    get_hmmscan_list ${PFAM_ID}_cooksCutoff_FALSE_hmmscan.txt \
+                   > ${PFAM_ID}_cooksCutoff_FALSE_hmmscan.isoform_list.txt
+
+    get_hmmscan_fasta ${PFAM_ID}_cooksCutoff_FALSE_hmmscan.isoform_list.txt "FALSE"
+
+done < ${PFAM_ID_LIST}
 
 
 mv ${SCRIPT_DIR}/run_vidkit.sh ${OUT_DIR}
