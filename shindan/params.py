@@ -26,7 +26,7 @@ class Params(object):
         parser = argparse.ArgumentParser(description='Vid-kit version {}'.format(__version__),
                                          formatter_class=argparse.RawTextHelpFormatter)
         parser.usage = ('shindan -l <FASTQ_LIST> \n'
-                        '       -o <OUT_DIR> \n'
+                        '        -o <OUT_DIR> \n'
                         '       [-t <INT>]')
 
         # set options

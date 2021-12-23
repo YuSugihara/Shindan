@@ -51,6 +51,20 @@ do
     FASTQ1=${COLS[1]}
     FASTQ2=${COLS[2]}
 
+    if [ ${V_FASTQ_CNT} = 0 ] && [ ${N_FASTQ_CNT} = 0 ]
+    then
+
+        TRINITY_LEFT="${FASTQ1}"
+        TRINITY_RIGHT="${FASTQ2}"
+
+    else
+
+        TRINITY_LEFT="${TRINITY_LEFT},${FASTQ1}"
+        TRINITY_RIGHT="${TRINITY_RIGHT},${FASTQ2}"
+
+    fi
+
+
     if [ ${SAMPLE_TYPE} = "V" ]
     then
 
@@ -66,19 +80,6 @@ do
         TRAILING:20 \
         SLIDINGWINDOW:4:15 \
         MINLEN:75
-
-        if [ ${V_FASTQ_CNT} = 0 ]
-        then
-
-            TRINITY_LEFT="${FASTQ1}"
-            TRINITY_RIGHT="${FASTQ2}"
-
-        else
-
-            TRINITY_LEFT="${TRINITY_LEFT},${FASTQ1}"
-            TRINITY_RIGHT="${TRINITY_RIGHT},${FASTQ2}"
-
-        fi
 
         echo "V    V${V_FASTQ_CNT}    ${FASTQ1}    ${FASTQ2}" >> ${OUT_DIR}/00_fastq/fastq_list.txt
 
