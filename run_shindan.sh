@@ -25,7 +25,7 @@ mkdir -p ${OUT_DIR}/00_fastq
 
 cd ${OUT_DIR}/00_fastq
 
-if [ ${ADAPTER_FASTA} = "Default_fasta" ]
+if [ ${ADAPTER_FASTA} = "Default_adapter" ]
 then
 
     wget https://raw.githubusercontent.com/YuSugihara/Shindan/master/adapters.fasta \
@@ -118,14 +118,29 @@ done < ${FASTQ_LIST}
 mkdir -p ${OUT_DIR}/10_trinity
 
 
-Trinity --seqType fq \
-        --max_memory ${MAX_MEMORY} \
-        --left ${TRINITY_LEFT} \
-        --right ${TRINITY_RIGHT} \
-        --output ${OUT_DIR}/10_trinity/assembly \
-        --SS_lib_type ${SS_LIB_TYPE} \
-        --CPU ${N_THREADS} \
-        --full_cleanup
+if [ ${SS_LIB_TYPE} = "No" ]
+then
+
+    Trinity --seqType fq \
+            --max_memory ${MAX_MEMORY} \
+            --left ${TRINITY_LEFT} \
+            --right ${TRINITY_RIGHT} \
+            --output ${OUT_DIR}/10_trinity/assembly \
+            --CPU ${N_THREADS} \
+            --full_cleanup
+
+else
+
+    Trinity --seqType fq \
+            --max_memory ${MAX_MEMORY} \
+            --left ${TRINITY_LEFT} \
+            --right ${TRINITY_RIGHT} \
+            --output ${OUT_DIR}/10_trinity/assembly \
+            --SS_lib_type ${SS_LIB_TYPE} \
+            --CPU ${N_THREADS} \
+            --full_cleanup
+
+fi
 
 
 mkdir -p ${OUT_DIR}/20_estimate_abundance
@@ -323,7 +338,7 @@ mkdir -p ${OUT_DIR}/60_fasta
 cd ${OUT_DIR}/50_hmmer
 
 
-if [ ${ADAPTER_FASTA} = "Default_list" ]
+if [ ${PFAM_ID_LIST} = "Default_list" ]
 then
 
     wget https://raw.githubusercontent.com/YuSugihara/Shindan/master/Pfam_IDs_list.txt

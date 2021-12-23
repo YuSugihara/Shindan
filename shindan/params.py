@@ -3,7 +3,6 @@ import sys
 import argparse
 from multiprocessing import Pool
 import multiprocessing as multi
-from shindan.utils import time_stamp
 from shindan.__init__ import __version__
 
 
@@ -50,9 +49,48 @@ class Params(object):
         parser.add_argument('-t',
                             '--threads',
                             action='store',
-                            default=2,
+                            default=4,
                             type=int,
                             help='Number of threads.',
+                            metavar='')
+
+        parser.add_argument('-a',
+                            '--adapter',
+                            action='store',
+                            default="Default_adapter",
+                            type=str,
+                            help=("FASTA of adapter sequences. If you don't\n"
+                                  'specify this option, the defaul adapter set\n'
+                                  'will be used.'),
+                            metavar='')
+
+        parser.add_argument('--pfam',
+                            action='store',
+                            default="Default_list",
+                            type=str,
+                            help=("List of Pfam IDs. If you don't specify\n"
+                                  'this option, the defaul list will be used.'),
+                            metavar='')
+
+        parser.add_argument('--SS-lib-type',
+                            action='store',
+                            default='No',
+                            type=str,
+                            help=('Type of strand specific library (No/FR/RF).'),
+                            metavar='')
+
+        parser.add_argument('--pvalue',
+                            action='store',
+                            default=0.01,
+                            type=float,
+                            help='Threshold of pvalue in DESeq2. [0.01]',
+                            metavar='')
+
+        parser.add_argument('--max-memory',
+                            action='store',
+                            default='32G',
+                            type=str,
+                            help=('Max memory to use by Trinity.'),
                             metavar='')
 
         # set version

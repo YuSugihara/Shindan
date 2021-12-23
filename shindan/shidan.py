@@ -18,6 +18,7 @@ class Shindan(object):
         self.args = args
 
     def run():
+        pass
 
 
 
