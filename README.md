@@ -5,12 +5,12 @@
 - [What is ViiR?](#What-is-ViiR)
 - [Installation](#Installation)
   + [Dependencies](#Dependencies)
-  + [Installation using bioconda](#Installation-using-bioconda)
+  + [Installation via bioconda](#Installation-via-bioconda)
 
 
 ## What is ViiR?
 
-ViiR is a software for "Virus Identification Independent of Reference sequences".
+ViiR is a software for 'Virus identification independent of Reference sequence'.
 
 ## Installation
 ### Dependencies
@@ -26,4 +26,24 @@ ViiR is a software for "Virus Identification Independent of Reference sequences"
 - [HMMER](http://hmmer.org/)
 
 We highly recommend the users to download Trinity via [bioconda](https://bioconda.github.io/).
-Other softwares requered in upstream or downstream analysis can be downloaded with Trinity via bioconda. 
+Other softwares requered in upstream or downstream analyses can be downloaded with Trinity via bioconda.
+
+
+### Installation via bioconda
+You can easily install the dependencies of ViiR via [bioconda](https://bioconda.github.io/index.html).
+```
+$ conda install -c bioconda trinity hmmer wget
+```
+
+If you want to create ViiR specific environment:
+```
+$ conda create -n viir -c bioconda trinity hmmer wget
+```
+
+ViiR can be installed using the following commands.
+```
+$ git clone https://github.com/YuSugihara/ViiR.git
+$ cd ViiR
+$ pip install . 
+```
+
