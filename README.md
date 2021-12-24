@@ -10,7 +10,7 @@
 
 ## What is ViiR?
 
-ViiR is a pipeline to quickly identify a causal plant virus in the field. 
+ViiR is a software for "Virus Identification Independent of Reference sequences".
 
 ## Installation
 ### Dependencies
