@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 
 from distutils.core import setup
-from vidkit.__init__ import __version__
+from viir.__init__ import __version__
 
-setup(name='vidkit',
+setup(name='viir',
       version='{}'.format(__version__),
-      description='Vid-kit: plant virus diagnosis tool-kit',
+      description='ViiR : Virus Identification Independent of Reference sequences',
       author='Yu Sugihara',
-      author_email='yu57th@gmail.com',
-      url='https://github.com/YuSugihara/Vid-kit',
+      author_email='sugihara.yu.85s@kyoto-u.jp',
+      url='https://github.com/YuSugihara/ViiR',
       license='GPL',
-      packages=['vidkit'],
+      packages=['viir'],
       entry_points={'console_scripts': [
-            'vidkit = vidkit.vidkit:main',
+            'viir = viir.viir:main',
             ]
         }
     )

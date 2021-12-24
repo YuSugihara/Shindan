@@ -1,16 +1,16 @@
-# Shindan User Guide
+# ViiR User Guide
 #### Version 0.0.1
 
 ## Table of contents
-- [What is Shindan?](#What-is-Shindan)
+- [What is ViiR?](#What-is-ViiR)
 - [Installation](#Installation)
   + [Dependencies](#Dependencies)
   + [Installation using bioconda](#Installation-using-bioconda)
 
 
-## What is Shindan?
+## What is ViiR?
 
-Shindan is a pipeline to quickly identify a causal plant virus in the field. 
+ViiR is a pipeline to quickly identify a causal plant virus in the field. 
 
 ## Installation
 ### Dependencies
