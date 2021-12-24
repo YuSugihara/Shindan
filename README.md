@@ -32,18 +32,18 @@ Other softwares requered in upstream or downstream analyses can be downloaded wi
 ### Installation via bioconda
 You can easily install the dependencies of ViiR via [bioconda](https://bioconda.github.io/index.html).
 ```
-$ conda install -c bioconda trinity hmmer wget
+conda install -c bioconda trinity hmmer wget
 ```
 
 If you want to create ViiR specific environment:
 ```
-$ conda create -n viir -c bioconda trinity hmmer wget
+conda create -n viir -c bioconda trinity hmmer wget
 ```
 
 ViiR can be installed using the following commands.
 ```
-$ git clone https://github.com/YuSugihara/ViiR.git
-$ cd ViiR
-$ pip install . 
+git clone https://github.com/YuSugihara/ViiR.git
+cd ViiR
+pip install . 
 ```
 
