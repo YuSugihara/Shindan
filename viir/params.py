@@ -24,9 +24,7 @@ class Params(object):
     def viir_options(self):
         parser = argparse.ArgumentParser(description='Vid-kit version {}'.format(__version__),
                                          formatter_class=argparse.RawTextHelpFormatter)
-        parser.usage = ('viir -l <FASTQ_LIST> \n'
-                        '     -o <OUT_DIR> \n'
-                        '    [-t <INT>]')
+        parser.usage = 'viir -l <FASTQ_LIST> -o <OUT_DIR> [-t <INT>]'
 
         # set options
         parser.add_argument('-l',
