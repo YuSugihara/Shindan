@@ -15,7 +15,7 @@ class ViiR(object):
     def __init__(self, args):
         self.args = args
 
-    def run():
+    def run(self):
 
         cmd1 = 'wget https://raw.githubusercontent.com/YuSugihara/ViiR/master/run_viir.sh'
 

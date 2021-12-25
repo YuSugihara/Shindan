@@ -1,8 +1,5 @@
-import os
 import sys
 import argparse
-from multiprocessing import Pool
-import multiprocessing as multi
 from viir.__init__ import __version__
 
 
