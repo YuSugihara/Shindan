@@ -1,6 +1,0 @@
-V V.1.fq1 V.1.fq2
-V V.2.fq1 V.2.fq2
-V V.3.fq1 V.3.fq2
-N N.1.fq1 N.1.fq2
-N N.2.fq1 N.2.fq2
-N N.3.fq1 N.3.fq2
