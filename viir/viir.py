@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
+from viir.params import Params
+
 
 pm = Params('viir')
 args = pm.set_options()
 
 
 import subprocess as sbp
-from viir.params import Params
 
 
 class ViiR(object):
