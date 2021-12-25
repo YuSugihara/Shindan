@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash -e
 
 
 ######################### Parameters #####################################
@@ -14,6 +14,7 @@ ADAPTER_FASTA=$8
 
 
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
+CURRENT_DIR=`pwd`
 
 mkdir -p ${OUT_DIR}
 
@@ -48,8 +49,8 @@ do
     COLS=(${LINE})
 
     SAMPLE_TYPE=${COLS[0]}
-    FASTQ1=${COLS[1]}
-    FASTQ2=${COLS[2]}
+    FASTQ1=${CURRENT_DIR}/${COLS[1]}
+    FASTQ2=${CURRENT_DIR}/${COLS[2]}
 
     if [ ${V_FASTQ_CNT} = 0 ] && [ ${N_FASTQ_CNT} = 0 ]
     then
@@ -394,4 +395,4 @@ do
 done < ${PFAM_ID_LIST}
 
 
-mv ${SCRIPT_DIR}/run_vidkit.sh ${OUT_DIR}
+mv ${SCRIPT_DIR}/run_viir.sh ${OUT_DIR}
