@@ -23,6 +23,7 @@ ViiR is a software for 'Virus identification independent of Reference sequence'.
   + [Samtools](http://www.htslib.org/doc/samtools.html)
   + [R](https://www.r-project.org/)
   + [DESeq2](https://bioconductor.org/packages/3.14/bioc/vignettes/DESeq2/inst/doc/DESeq2.html)
+- [RSEM](https://deweylab.github.io/RSEM/)
 - [HMMER](http://hmmer.org/)
 
 We highly recommend the users to download Trinity via [bioconda](https://bioconda.github.io/).
@@ -37,7 +38,7 @@ conda install -c bioconda trinity hmmer wget
 
 If you want to create ViiR specific environment:
 ```
-conda create -n viir -c bioconda trinity hmmer wget
+conda create -n viir -c bioconda trinity hmmer wget rsem
 ```
 
 ViiR can be installed using the following commands.
