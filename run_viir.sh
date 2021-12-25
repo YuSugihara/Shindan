@@ -14,7 +14,6 @@ ADAPTER_FASTA=$8
 
 
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
-CURRENT_DIR=`pwd`
 
 mkdir -p ${OUT_DIR}
 
@@ -49,8 +48,11 @@ do
     COLS=(${LINE})
 
     SAMPLE_TYPE=${COLS[0]}
-    FASTQ1=${CURRENT_DIR}/${COLS[1]}
-    FASTQ2=${CURRENT_DIR}/${COLS[2]}
+    FASTQ1=${SCRIPT_DIR}/${COLS[1]}
+    FASTQ2=${SCRIPT_DIR}/${COLS[2]}
+
+    echo ${FASTQ1}
+    echo ${FASTQ2}
 
     if [ ${V_FASTQ_CNT} = 0 ] && [ ${N_FASTQ_CNT} = 0 ]
     then
@@ -72,10 +74,10 @@ do
         trimmomatic PE -threads ${N_THREADS} -phred33 \
         ${FASTQ1} \
         ${FASTQ2} \
-        ${OUT_DIR}/00_fastq/infected_sample_${V_FASTQ_CNT}.1.trimmed.fastq.gz \
-        ${OUT_DIR}/00_fastq/infected_sample_${V_FASTQ_CNT}.1.unpaired.trimmed.fastq.gz \
-        ${OUT_DIR}/00_fastq/infected_sample_${V_FASTQ_CNT}.2.trimmed.fastq.gz \
-        ${OUT_DIR}/00_fastq/infected_sample_${V_FASTQ_CNT}.2.unpaired.trimmed.fastq.gz \
+        ${OUT_DIR}/00_fastq/V_${V_FASTQ_CNT}.1.trimmed.fastq.gz \
+        ${OUT_DIR}/00_fastq/V_${V_FASTQ_CNT}.1.unpaired.trimmed.fastq.gz \
+        ${OUT_DIR}/00_fastq/V_${V_FASTQ_CNT}.2.trimmed.fastq.gz \
+        ${OUT_DIR}/00_fastq/V_${V_FASTQ_CNT}.2.unpaired.trimmed.fastq.gz \
         ILLUMINACLIP:${ADAPTER_FASTA}:2:30:10 \
         LEADING:20 \
         TRAILING:20 \
@@ -92,10 +94,10 @@ do
         trimmomatic PE -threads ${N_THREADS} -phred33 \
         ${FASTQ1} \
         ${FASTQ2} \
-        ${OUT_DIR}/00_fastq/normal_sample_${N_FASTQ_CNT}.1.trimmed.fastq.gz \
-        ${OUT_DIR}/00_fastq/normal_sample_${N_FASTQ_CNT}.1.unpaired.trimmed.fastq.gz \
-        ${OUT_DIR}/00_fastq/normal_sample_${N_FASTQ_CNT}.2.trimmed.fastq.gz \
-        ${OUT_DIR}/00_fastq/normal_sample_${N_FASTQ_CNT}.2.unpaired.trimmed.fastq.gz \
+        ${OUT_DIR}/00_fastq/N_${N_FASTQ_CNT}.1.trimmed.fastq.gz \
+        ${OUT_DIR}/00_fastq/N_${N_FASTQ_CNT}.1.unpaired.trimmed.fastq.gz \
+        ${OUT_DIR}/00_fastq/N_${N_FASTQ_CNT}.2.trimmed.fastq.gz \
+        ${OUT_DIR}/00_fastq/N_${N_FASTQ_CNT}.2.unpaired.trimmed.fastq.gz \
         ILLUMINACLIP:${ADAPTER_FASTA}:2:30:10 \
         LEADING:20 \
         TRAILING:20 \
@@ -113,7 +115,7 @@ do
 
     fi
 
-done < ${FASTQ_LIST}
+done < ${SCRIPT_DIR}/${FASTQ_LIST}
 
 
 mkdir -p ${OUT_DIR}/10_trinity
