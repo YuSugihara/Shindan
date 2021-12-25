@@ -18,7 +18,7 @@ class ViiR(object):
 
     def run(self):
 
-        cmd1 = 'wget https://raw.githubusercontent.com/YuSugihara/ViiR/master/run_viir.sh'
+        cmd1 = 'wget https://raw.githubusercontent.com/YuSugihara/ViiR/master/ -O run_viir.sh'
 
         cmd2 = 'bash -e ./run_viir.sh {} {} {} {} {} {} {} {}'.format(self.args.out, \
                                                                       self.args.fastq_list, \

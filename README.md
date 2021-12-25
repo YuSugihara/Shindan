@@ -38,13 +38,28 @@ conda install -c bioconda trinity hmmer wget
 
 If you want to create ViiR specific environment:
 ```
-conda create -n viir -c bioconda trinity hmmer wget rsem
+conda create -n viir -c bioconda trinity hmmer wget
+conda install -c bioconda rsem
 ```
+If you install RSEM with other dependencies at the same time, anaconda take a long time to solve the environment or cannot solve the environment.
+
 
 ViiR can be installed using the following commands.
 ```
 git clone https://github.com/YuSugihara/ViiR.git
 cd ViiR
 pip install . 
+```
+
+
+If you will face an error like below:
+
+```
+samtools: error while loading shared libraries: libcrypto.so.1.0.0: cannot open shared object file: No such file or directory
+```
+
+You can solve the problem using the symbolic link like below:
+```
+ln -s ~/miniconda3/envs/viir/lib/libcrypto.so.3 ~/miniconda3/envs/viir/lib/libcrypto.so.1.0.0
 ```
 

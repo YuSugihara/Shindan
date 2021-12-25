@@ -25,101 +25,101 @@ mkdir -p ${OUT_DIR}/00_fastq
 
 cd ${OUT_DIR}/00_fastq
 
-# if [ ${ADAPTER_FASTA} = "Default_adapter" ]
-# then
+if [ ${ADAPTER_FASTA} = "Default_adapter" ]
+then
 
-#     wget https://raw.githubusercontent.com/YuSugihara/ViiR/master/adapters.fasta \
-#          -O ${OUT_DIR}/00_fastq/adapter.fasta
+    wget https://raw.githubusercontent.com/YuSugihara/ViiR/master/adapters.fasta \
+         -O ${OUT_DIR}/00_fastq/adapter.fasta
 
-#     ADAPTER_FASTA=${OUT_DIR}/00_fastq/adapter.fasta
+    ADAPTER_FASTA=${OUT_DIR}/00_fastq/adapter.fasta
 
-# fi
-
-
-# FASTQ_CNT=0
-# TRINITY_LEFT=""
-# TRINITY_RIGHT=""
+fi
 
 
-# while read LINE || [ -n "${LINE}" ]
-# do
-
-#     COLS=(${LINE})
-
-#     SAMPLE_TYPE=${COLS[0]}
-#     FASTQ1=${SCRIPT_DIR}/${COLS[1]}
-#     FASTQ2=${SCRIPT_DIR}/${COLS[2]}
+FASTQ_CNT=0
+TRINITY_LEFT=""
+TRINITY_RIGHT=""
 
 
-#     mkdir -p ${OUT_DIR}/00_fastq/${SAMPLE_TYPE}_${FASTQ_CNT}
+while read LINE || [ -n "${LINE}" ]
+do
 
-#     PREFIX=${OUT_DIR}/00_fastq/${SAMPLE_TYPE}_${FASTQ_CNT}/${SAMPLE_TYPE}_${FASTQ_CNT}
+    COLS=(${LINE})
 
-#     trimmomatic PE -threads ${N_THREADS} -phred33 \
-#     ${FASTQ1} \
-#     ${FASTQ2} \
-#     ${PREFIX}.1.trimmed.fastq.gz \
-#     ${PREFIX}.1.unpaired.trimmed.fastq.gz \
-#     ${PREFIX}.2.trimmed.fastq.gz \
-#     ${PREFIX}.2.unpaired.trimmed.fastq.gz \
-#     ILLUMINACLIP:${ADAPTER_FASTA}:2:30:10 \
-#     LEADING:20 \
-#     TRAILING:20 \
-#     SLIDINGWINDOW:4:15 \
-#     MINLEN:75
-
-#     echo "${SAMPLE_TYPE}    \
-#           ${SAMPLE_TYPE}${FASTQ_CNT}    \
-#           ${PREFIX}.1.trimmed.fastq.gz    \
-#           ${PREFIX}.2.trimmed.fastq.gz" >> ${OUT_DIR}/00_fastq/fastq_list.txt
+    SAMPLE_TYPE=${COLS[0]}
+    FASTQ1=${SCRIPT_DIR}/${COLS[1]}
+    FASTQ2=${SCRIPT_DIR}/${COLS[2]}
 
 
-#     if [ ${FASTQ_CNT} = 0 ]
-#     then
+    mkdir -p ${OUT_DIR}/00_fastq/${SAMPLE_TYPE}${FASTQ_CNT}
 
-#         TRINITY_LEFT="${PREFIX}.1.trimmed.fastq.gz"
-#         TRINITY_RIGHT="${PREFIX}.2.trimmed.fastq.gz"
+    PREFIX=${OUT_DIR}/00_fastq/${SAMPLE_TYPE}${FASTQ_CNT}/${SAMPLE_TYPE}${FASTQ_CNT}
 
-#     else
+    trimmomatic PE -threads ${N_THREADS} -phred33 \
+    ${FASTQ1} \
+    ${FASTQ2} \
+    ${PREFIX}.1.trimmed.fastq.gz \
+    ${PREFIX}.1.unpaired.trimmed.fastq.gz \
+    ${PREFIX}.2.trimmed.fastq.gz \
+    ${PREFIX}.2.unpaired.trimmed.fastq.gz \
+    ILLUMINACLIP:${ADAPTER_FASTA}:2:30:10 \
+    LEADING:20 \
+    TRAILING:20 \
+    SLIDINGWINDOW:4:15 \
+    MINLEN:75
 
-#         TRINITY_LEFT="${TRINITY_LEFT},${PREFIX}.1.trimmed.fastq.gz"
-#         TRINITY_RIGHT="${TRINITY_RIGHT},${PREFIX}.2.trimmed.fastq.gz"
-
-#     fi
-
-
-#     FASTQ_CNT=$((FASTQ_CNT+1))
+    echo "${SAMPLE_TYPE}    \
+          ${SAMPLE_TYPE}${FASTQ_CNT}    \
+          ${PREFIX}.1.trimmed.fastq.gz    \
+          ${PREFIX}.2.trimmed.fastq.gz" >> ${OUT_DIR}/00_fastq/fastq_list.txt
 
 
-# done < ${SCRIPT_DIR}/${FASTQ_LIST}
+    if [ ${FASTQ_CNT} = 0 ]
+    then
+
+        TRINITY_LEFT="${PREFIX}.1.trimmed.fastq.gz"
+        TRINITY_RIGHT="${PREFIX}.2.trimmed.fastq.gz"
+
+    else
+
+        TRINITY_LEFT="${TRINITY_LEFT},${PREFIX}.1.trimmed.fastq.gz"
+        TRINITY_RIGHT="${TRINITY_RIGHT},${PREFIX}.2.trimmed.fastq.gz"
+
+    fi
 
 
-# mkdir -p ${OUT_DIR}/10_trinity
+    FASTQ_CNT=$((FASTQ_CNT+1))
 
 
-# if [ ${SS_LIB_TYPE} = "No" ]
-# then
+done < ${SCRIPT_DIR}/${FASTQ_LIST}
 
-#     Trinity --seqType fq \
-#             --max_memory ${MAX_MEMORY} \
-#             --left ${TRINITY_LEFT} \
-#             --right ${TRINITY_RIGHT} \
-#             --output ${OUT_DIR}/10_trinity/trinity_assembly \
-#             --CPU ${N_THREADS} \
-#             --full_cleanup
 
-# else
+mkdir -p ${OUT_DIR}/10_trinity
 
-#     Trinity --seqType fq \
-#             --max_memory ${MAX_MEMORY} \
-#             --left ${TRINITY_LEFT} \
-#             --right ${TRINITY_RIGHT} \
-#             --output ${OUT_DIR}/10_trinity/trinity_assembly \
-#             --SS_lib_type ${SS_LIB_TYPE} \
-#             --CPU ${N_THREADS} \
-#             --full_cleanup
 
-# fi
+if [ ${SS_LIB_TYPE} = "No" ]
+then
+
+    Trinity --seqType fq \
+            --max_memory ${MAX_MEMORY} \
+            --left ${TRINITY_LEFT} \
+            --right ${TRINITY_RIGHT} \
+            --output ${OUT_DIR}/10_trinity/trinity_assembly \
+            --CPU ${N_THREADS} \
+            --full_cleanup
+
+else
+
+    Trinity --seqType fq \
+            --max_memory ${MAX_MEMORY} \
+            --left ${TRINITY_LEFT} \
+            --right ${TRINITY_RIGHT} \
+            --output ${OUT_DIR}/10_trinity/trinity_assembly \
+            --SS_lib_type ${SS_LIB_TYPE} \
+            --CPU ${N_THREADS} \
+            --full_cleanup
+
+fi
 
 
 mkdir -p ${OUT_DIR}/20_estimate_abundance
