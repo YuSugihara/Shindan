@@ -36,8 +36,7 @@ then
 fi
 
 
-V_FASTQ_CNT=0
-N_FASTQ_CNT=0
+FASTQ_CNT=0
 TRINITY_LEFT=""
 TRINITY_RIGHT=""
 
@@ -51,69 +50,46 @@ do
     FASTQ1=${SCRIPT_DIR}/${COLS[1]}
     FASTQ2=${SCRIPT_DIR}/${COLS[2]}
 
-    echo ${FASTQ1}
-    echo ${FASTQ2}
 
-    if [ ${V_FASTQ_CNT} = 0 ] && [ ${N_FASTQ_CNT} = 0 ]
+    mkdir -p ${OUT_DIR}/00_fastq/${SAMPLE_TYPE}_${FASTQ_CNT}
+
+    PREFIX=${OUT_DIR}/00_fastq/${SAMPLE_TYPE}_${FASTQ_CNT}/${SAMPLE_TYPE}_${FASTQ_CNT}
+
+    trimmomatic PE -threads ${N_THREADS} -phred33 \
+    ${FASTQ1} \
+    ${FASTQ2} \
+    ${PREFIX}.1.trimmed.fastq.gz \
+    ${PREFIX}.1.unpaired.trimmed.fastq.gz \
+    ${PREFIX}.2.trimmed.fastq.gz \
+    ${PREFIX}.2.unpaired.trimmed.fastq.gz \
+    ILLUMINACLIP:${ADAPTER_FASTA}:2:30:10 \
+    LEADING:20 \
+    TRAILING:20 \
+    SLIDINGWINDOW:4:15 \
+    MINLEN:75
+
+    echo "${SAMPLE_TYPE}    \
+          ${SAMPLE_TYPE}${FASTQ_CNT}    \
+          ${PREFIX}.1.trimmed.fastq.gz    \
+          ${PREFIX}.2.trimmed.fastq.gz" >> ${OUT_DIR}/00_fastq/fastq_list.txt
+
+
+    if [ ${FASTQ_CNT} = 0 ]
     then
 
-        TRINITY_LEFT="${FASTQ1}"
-        TRINITY_RIGHT="${FASTQ2}"
+        TRINITY_LEFT="${PREFIX}.1.trimmed.fastq.gz"
+        TRINITY_RIGHT="${PREFIX}.2.trimmed.fastq.gz"
 
     else
 
-        TRINITY_LEFT="${TRINITY_LEFT},${FASTQ1}"
-        TRINITY_RIGHT="${TRINITY_RIGHT},${FASTQ2}"
+        TRINITY_LEFT="${TRINITY_LEFT},${PREFIX}.1.trimmed.fastq.gz"
+        TRINITY_RIGHT="${TRINITY_RIGHT},${PREFIX}.2.trimmed.fastq.gz"
 
     fi
 
 
-    if [ ${SAMPLE_TYPE} = "V" ]
-    then
+    FASTQ_CNT=$((FASTQ_CNT+1))
 
-        trimmomatic PE -threads ${N_THREADS} -phred33 \
-        ${FASTQ1} \
-        ${FASTQ2} \
-        ${OUT_DIR}/00_fastq/V_${V_FASTQ_CNT}.1.trimmed.fastq.gz \
-        ${OUT_DIR}/00_fastq/V_${V_FASTQ_CNT}.1.unpaired.trimmed.fastq.gz \
-        ${OUT_DIR}/00_fastq/V_${V_FASTQ_CNT}.2.trimmed.fastq.gz \
-        ${OUT_DIR}/00_fastq/V_${V_FASTQ_CNT}.2.unpaired.trimmed.fastq.gz \
-        ILLUMINACLIP:${ADAPTER_FASTA}:2:30:10 \
-        LEADING:20 \
-        TRAILING:20 \
-        SLIDINGWINDOW:4:15 \
-        MINLEN:75
-
-        echo "V    V${V_FASTQ_CNT}    ${FASTQ1}    ${FASTQ2}" >> ${OUT_DIR}/00_fastq/fastq_list.txt
-
-        V_FASTQ_CNT=$((V_FASTQ_CNT+1))
-
-    elif [ ${SAMPLE_TYPE} = "N" ]
-    then
-
-        trimmomatic PE -threads ${N_THREADS} -phred33 \
-        ${FASTQ1} \
-        ${FASTQ2} \
-        ${OUT_DIR}/00_fastq/N_${N_FASTQ_CNT}.1.trimmed.fastq.gz \
-        ${OUT_DIR}/00_fastq/N_${N_FASTQ_CNT}.1.unpaired.trimmed.fastq.gz \
-        ${OUT_DIR}/00_fastq/N_${N_FASTQ_CNT}.2.trimmed.fastq.gz \
-        ${OUT_DIR}/00_fastq/N_${N_FASTQ_CNT}.2.unpaired.trimmed.fastq.gz \
-        ILLUMINACLIP:${ADAPTER_FASTA}:2:30:10 \
-        LEADING:20 \
-        TRAILING:20 \
-        SLIDINGWINDOW:4:15 \
-        MINLEN:75
-
-        echo "N    N${N_FASTQ_CNT}    ${FASTQ1}    ${FASTQ2}" >> ${OUT_DIR}/00_fastq/fastq_list.txt
-
-        N_FASTQ_CNT=$((N_FASTQ_CNT+1))
-
-    else
-
-        echo "   ERROR >>>>> First colum must be 'V' (Virus infected sample) or 'N' (Normal sample)" 1>&2
-        exit 1
-
-    fi
 
 done < ${SCRIPT_DIR}/${FASTQ_LIST}
 
@@ -128,7 +104,7 @@ then
             --max_memory ${MAX_MEMORY} \
             --left ${TRINITY_LEFT} \
             --right ${TRINITY_RIGHT} \
-            --output ${OUT_DIR}/10_trinity/assembly \
+            --output ${OUT_DIR}/10_trinity/trinity_assembly \
             --CPU ${N_THREADS} \
             --full_cleanup
 
@@ -138,7 +114,7 @@ else
             --max_memory ${MAX_MEMORY} \
             --left ${TRINITY_LEFT} \
             --right ${TRINITY_RIGHT} \
-            --output ${OUT_DIR}/10_trinity/assembly \
+            --output ${OUT_DIR}/10_trinity/trinity_assembly \
             --SS_lib_type ${SS_LIB_TYPE} \
             --CPU ${N_THREADS} \
             --full_cleanup
@@ -151,8 +127,8 @@ mkdir -p ${OUT_DIR}/20_estimate_abundance
 cd ${OUT_DIR}/20_estimate_abundance
 
 
-align_and_estimate_abundance.pl --transcripts ${OUT_DIR}/10_trinity/assembly.Trinity.fasta \
-                                --gene_trans_map ${OUT_DIR}/10_trinity/assembly.Trinity.fasta.gene_trans_map \
+align_and_estimate_abundance.pl --transcripts ${OUT_DIR}/10_trinity/trinity_assembly.Trinity.fasta \
+                                --gene_trans_map ${OUT_DIR}/10_trinity/trinity_assembly.Trinity.fasta.gene_trans_map \
                                 --seqType fq \
                                 --samples_file ${OUT_DIR}/00_fastq/fastq_list_for_DEG.txt \
                                 --SS_lib_type FR \
@@ -171,7 +147,7 @@ cd ${OUT_DIR}/30_count_matrix
 
 
 abundance_estimates_to_matrix.pl --est_method RSEM \
-                                 --gene_trans_map ${OUT_DIR}/10_trinity/assembly.Trinity.fasta.gene_trans_map \
+                                 --gene_trans_map ${OUT_DIR}/10_trinity/trinity_assembly.Trinity.fasta.gene_trans_map \
                                  --name_sample_by_basedir \
                                  --out_prefix RSEM \
                                  ${OUT_DIR}/20_estimate_abundance/*/RSEM.isoforms.results
@@ -267,7 +243,7 @@ function get_significant_fasta() {
     PREFIX=`get_prefix isoform ${COOKSCUTOFF}`
 
     samtools faidx -r ${PREFIX}.significant_${DATA_TYPE}s
-                      ${OUT_DIR}/10_trinity/assembly.Trinity.fasta \
+                      ${OUT_DIR}/10_trinity/trinity_assembly.Trinity.fasta \
                     > ${PREFIX}.significant_${DATA_TYPE}s.fasta
 
     esl-translate ${PREFIX}.significant_${DATA_TYPE}s.fasta \
@@ -302,13 +278,13 @@ function get_hmmscan_fasta() {
         then
 
             samtools faidx -r ${ISOFORM_LIST}
-                            ${OUT_DIR}/10_trinity/assembly.Trinity.fasta \
+                            ${OUT_DIR}/10_trinity/trinity_assembly.Trinity.fasta \
                             > ${OUT_DIR}/60_fasta/${PFAM_ID}.fasta
 
         else
 
             samtools faidx -r ${ISOFORM_LIST}
-                            ${OUT_DIR}/10_trinity/assembly.Trinity.fasta \
+                            ${OUT_DIR}/10_trinity/trinity_assembly.Trinity.fasta \
                             > ${OUT_DIR}/60_fasta/${PFAM_ID}.cooksCutoff_FALSE.fasta
 
         fi
