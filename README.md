@@ -34,14 +34,18 @@ Other softwares requered in upstream or downstream analyses can be downloaded wi
 You can easily install the dependencies of ViiR via [bioconda](https://bioconda.github.io/index.html).
 ```
 conda install -c bioconda trinity hmmer wget
+conda install -c bioconda rsem
 ```
+
+
+If you install RSEM with other dependencies at the same time, anaconda take a long time to solve the environment or cannot solve the environment.
+
 
 If you want to create ViiR specific environment:
 ```
 conda create -n viir -c bioconda trinity hmmer wget
 conda install -c bioconda rsem
 ```
-If you install RSEM with other dependencies at the same time, anaconda take a long time to solve the environment or cannot solve the environment.
 
 
 ViiR can be installed using the following commands.
