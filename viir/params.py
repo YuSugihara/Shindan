@@ -85,7 +85,7 @@ class Params(object):
                             action='store',
                             default='32G',
                             type=str,
-                            help=('Max memory to use by Trinity.'),
+                            help=('Max memory to use by Trinity. [32G]'),
                             metavar='')
 
         # set version
