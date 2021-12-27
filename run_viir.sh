@@ -195,18 +195,26 @@ function make_cooksCutoff_FALSE() {
     DATA_TYPE=$1
 
     DIR_PREFIX=${OUT_DIR}/40_DEGseq2/DEGseq2_${DATA_TYPE}_result
-    FILE_PREFIX=RSEM.${DATA_TYPE}.counts.matrix.V_vs_N.DESeq2
+    FILE_PREFIX=RSEM.${DATA_TYPE}.counts.matrix.N_vs_V.DESeq2
 
     mkdir -p ${DIR_PREFIX}_cooksCutoff_FALSE
 
     cat ${DIR_PREFIX}/${FILE_PREFIX}.Rscript | \
-    sed "s/contrast/contrast\,\ cooksCutoff\=FALSE/g" \
+    sed "s/contrast)/contrast\,\ cooksCutoff\=FALSE)/g" \
     > ${DIR_PREFIX}_cooksCutoff_FALSE/${FILE_PREFIX}.cooksCutoff_FALSE.Rscript
 
     Rscript ${DIR_PREFIX}_cooksCutoff_FALSE/${FILE_PREFIX}.cooksCutoff_FALSE.Rscript
 
+    mv ${FILE_PREFIX}.* ${DIR_PREFIX}_cooksCutoff_FALSE
+
     mv ${DIR_PREFIX}_cooksCutoff_FALSE/${FILE_PREFIX}.DE_results \
        ${DIR_PREFIX}_cooksCutoff_FALSE/${FILE_PREFIX}.DE_results.cooksCutoff_FALSE
+
+    mv ${DIR_PREFIX}_cooksCutoff_FALSE/${FILE_PREFIX}.count_matrix \
+       ${DIR_PREFIX}_cooksCutoff_FALSE/${FILE_PREFIX}.count_matrix.cooksCutoff_FALSE
+
+    mv ${DIR_PREFIX}_cooksCutoff_FALSE/${FILE_PREFIX}.DE_results.MA_n_Volcano.pdf \
+       ${DIR_PREFIX}_cooksCutoff_FALSE/${FILE_PREFIX}.DE_results.MA_n_Volcano.cooksCutoff_FALSE.pdf
 
 }
 
@@ -220,12 +228,12 @@ function get_prefix() {
     then
 
         DIR_PREFIX=${OUT_DIR}/40_DEGseq2/DEGseq2_${DATA_TYPE}_result
-        FILE_PREFIX=RSEM.${DATA_TYPE}.counts.matrix.V_vs_N.DESeq2
+        FILE_PREFIX=RSEM.${DATA_TYPE}.counts.matrix.N_vs_V.DESeq2.DE_results
 
     else
 
         DIR_PREFIX=${OUT_DIR}/40_DEGseq2/DEGseq2_${DATA_TYPE}_result_cooksCutoff_FALSE
-        FILE_PREFIX=RSEM.${DATA_TYPE}.counts.matrix.V_vs_N.DESeq2.cooksCutoff_FALSE
+        FILE_PREFIX=RSEM.${DATA_TYPE}.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE
 
     fi
 
@@ -259,12 +267,12 @@ function get_significant_fasta() {
 
     PREFIX=`get_prefix isoform ${COOKSCUTOFF}`
 
-    samtools faidx -r ${PREFIX}.significant_${DATA_TYPE}s
+    samtools faidx -r ${PREFIX}.significant_isoforms \
                       ${OUT_DIR}/10_trinity/trinity_assembly.Trinity.fasta \
-                    > ${PREFIX}.significant_${DATA_TYPE}s.fasta
+                    > ${PREFIX}.significant_isoforms.fasta
 
-    esl-translate ${PREFIX}.significant_${DATA_TYPE}s.fasta \
-    sed "s/\ source\=/-/g" > ${PREFIX}.significant_${DATA_TYPE}s.AA.fasta
+    esl-translate ${PREFIX}.significant_isoforms.fasta | \
+    sed "s/\ source\=/-/g" > ${PREFIX}.significant_isoforms.AA.fasta
 
 }
 
@@ -276,7 +284,7 @@ function get_hmmscan_list() {
     cat ${HMMSCAN_RESULT} | \
     grep -v "#" | \
     awk '{print $3}' | \
-    ut -f 2 -d "-" | \
+    cut -f 2 -d "-" | \
     sort | \
     uniq
 
@@ -294,13 +302,13 @@ function get_hmmscan_fasta() {
         if [ ${COOKSCUTOFF} = "TRUE" ]
         then
 
-            samtools faidx -r ${ISOFORM_LIST}
+            samtools faidx -r ${ISOFORM_LIST} \
                             ${OUT_DIR}/10_trinity/trinity_assembly.Trinity.fasta \
                             > ${OUT_DIR}/60_fasta/${PFAM_ID}.fasta
 
         else
 
-            samtools faidx -r ${ISOFORM_LIST}
+            samtools faidx -r ${ISOFORM_LIST} \
                             ${OUT_DIR}/10_trinity/trinity_assembly.Trinity.fasta \
                             > ${OUT_DIR}/60_fasta/${PFAM_ID}.cooksCutoff_FALSE.fasta
 
@@ -352,40 +360,42 @@ fi
 while read PFAM_ID || [ -n "${PFAM_ID}" ]
 do
 
-    wget https://pfam.xfam.org/family/${PFAM_ID}/hmm \
-         -O ${PFAM_ID}.hmm
+    mkdir -p ${OUT_DIR}/50_hmmer/${PFAM_ID}
+
+    wget http://pfam.xfam.org/family/${PFAM_ID}/hmm \
+         -O ${PFAM_ID}/${PFAM_ID}.hmm
 
 
-    hmmpress ${PFAM_ID}.hmm
+    hmmpress ${PFAM_ID}/${PFAM_ID}.hmm
 
 
     PREFIX=`get_prefix isoform TRUE`
 
     hmmscan  --cpu ${N_THREADS} \
-             --tblout ${PFAM_ID}_hmmscan.txt \
-             ${PFAM_ID}.hmm \
+             --tblout ${PFAM_ID}/${PFAM_ID}_hmmscan.txt \
+             ${PFAM_ID}/${PFAM_ID}.hmm \
              ${PREFIX}.significant_isoforms.AA.fasta \
              1> /dev/null
 
 
-    get_hmmscan_list ${PFAM_ID}_hmmscan.txt \
-                   > ${PFAM_ID}_hmmscan.isoform_list.txt
+    get_hmmscan_list ${PFAM_ID}/${PFAM_ID}_hmmscan.txt \
+                   > ${PFAM_ID}/${PFAM_ID}_hmmscan.isoform_list.txt
 
-    get_hmmscan_fasta ${PFAM_ID}_hmmscan.isoform_list.txt "TRUE"
+    get_hmmscan_fasta ${PFAM_ID}/${PFAM_ID}_hmmscan.isoform_list.txt "TRUE"
 
 
     PREFIX=`get_prefix isoform FALSE`
 
     hmmscan  --cpu ${N_THREADS} \
-             --tblout ${PFAM_ID}_cooksCutoff_FALSE_hmmscan.txt \
-             ${PFAM_ID}.hmm \
+             --tblout ${PFAM_ID}/${PFAM_ID}_cooksCutoff_FALSE_hmmscan.txt \
+             ${PFAM_ID}/${PFAM_ID}.hmm \
              ${PREFIX}.significant_isoforms.AA.fasta \
              1> /dev/null
 
-    get_hmmscan_list ${PFAM_ID}_cooksCutoff_FALSE_hmmscan.txt \
-                   > ${PFAM_ID}_cooksCutoff_FALSE_hmmscan.isoform_list.txt
+    get_hmmscan_list ${PFAM_ID}/${PFAM_ID}_cooksCutoff_FALSE_hmmscan.txt \
+                   > ${PFAM_ID}/${PFAM_ID}_cooksCutoff_FALSE_hmmscan.isoform_list.txt
 
-    get_hmmscan_fasta ${PFAM_ID}_cooksCutoff_FALSE_hmmscan.isoform_list.txt "FALSE"
+    get_hmmscan_fasta ${PFAM_ID}/${PFAM_ID}_cooksCutoff_FALSE_hmmscan.isoform_list.txt "FALSE"
 
 done < ${PFAM_ID_LIST}
 
