@@ -1,6 +1,0 @@
-V ./fastq/V.1.fq1.gz ./fastq/V.1.fq2.gz
-V ./fastq/V.2.fq1.gz ./fastq/V.2.fq2.gz
-V ./fastq/V.3.fq1.gz ./fastq/V.3.fq2.gz
-N ./fastq/N.1.fq1.gz ./fastq/N.1.fq2.gz
-N ./fastq/N.2.fq1.gz ./fastq/N.2.fq2.gz
-N ./fastq/N.3.fq1.gz ./fastq/N.3.fq2.gz
