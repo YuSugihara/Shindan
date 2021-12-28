@@ -12,7 +12,6 @@ SS_LIB_TYPE=$7
 ADAPTER_FASTA=$8
 ##########################################################################
 
-mkdir -p ${OUT_DIR}
 mkdir -p ${OUT_DIR}/00_fastq
 
 

@@ -29,7 +29,7 @@ class ViiR(object):
                                                                       self.args.SS_lib_type, \
                                                                       self.args.adapter)
 
-        print(cmd1, file=sys.stderr)
+        print(cmd1, file=sys.stderr, flush=True)
 
         sbp.run(cmd1,
                 stdout=sys.stdout,
@@ -37,7 +37,7 @@ class ViiR(object):
                 shell=True,
                 check=True)
 
-        print(cmd2, file=sys.stderr)
+        print(cmd2, file=sys.stderr, flush=True)
 
         sbp.run(cmd2,
                 stdout=sys.stdout,
