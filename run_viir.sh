@@ -28,7 +28,7 @@ cd ${OUT_DIR}/00_fastq
 if [ ${ADAPTER_FASTA} = "Default_adapter" ]
 then
 
-    wget https://raw.githubusercontent.com/YuSugihara/ViiR/master/adapters.fasta \
+    wget https://raw.githubusercontent.com/YuSugihara/ViiR/master/example/adapters.fasta \
          -O ${OUT_DIR}/00_fastq/adapter.fasta
 
     ADAPTER_FASTA=${OUT_DIR}/00_fastq/adapter.fasta
@@ -350,7 +350,7 @@ cd ${OUT_DIR}/50_hmmer
 if [ ${PFAM_ID_LIST} = "Default_list" ]
 then
 
-    wget https://raw.githubusercontent.com/YuSugihara/ViiR/master/Pfam_IDs_list.txt
+    wget https://raw.githubusercontent.com/YuSugihara/ViiR/master/example/Pfam_IDs_list.txt
 
     PFAM_ID_LIST=${OUT_DIR}/50_hmmer/Pfam_IDs_list.txt
 
