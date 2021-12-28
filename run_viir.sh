@@ -253,7 +253,7 @@ function get_significant_list() {
 
     cat ${PREFIX} | \
     awk '{if ($10 < '${PVALUE}') print $0}' | \
-    awk '{if ($7 > 0) print $0}' | \
+    awk '{if ($7 < 0) print $0}' | \
     cut -f 1 \
     > ${PREFIX}.significant_${DATA_TYPE}s
 
