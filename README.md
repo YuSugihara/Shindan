@@ -6,6 +6,7 @@
 - [Installation](#Installation)
   + [Dependencies](#Dependencies)
   + [Installation via bioconda](#Installation-via-bioconda)
+- [Usage](#Usage)
 
 
 ## What is ViiR?
@@ -52,5 +53,31 @@ pip install .
 If you will face an error like ```samtools: error while loading shared libraries: libcrypto.so.1.0.0: cannot open shared object file: No such file or directory```, you can solve the problem using the symbolic link like below. Please change the PATH to the environment of ViiR in anaconda.
 ```
 ln -s ~/miniconda3/envs/viir/lib/libcrypto.so.3 ~/miniconda3/envs/viir/lib/libcrypto.so.1.0.0
+```
+
+
+
+## Usage
+
+```
+usage: viir -l <FASTQ_LIST> -o <OUT_DIR> [-t <INT>]
+
+Vid-kit version 0.0.1
+
+optional arguments:
+  -h, --help          show this help message and exit
+  -l , --fastq-list   Fastq list.
+  -o , --out          Output directory. Specified name must not
+                      exist.
+  -t , --threads      Number of threads.
+  -a , --adapter      FASTA of adapter sequences. If you don't
+                      specify this option, the defaul adapter set
+                      will be used.
+  --pfam              List of Pfam IDs. If you don't specify
+                      this option, the defaul list will be used.
+  --SS-lib-type       Type of strand specific library (No/FR/RF).
+  --pvalue            Threshold of pvalue in DESeq2. [0.01]
+  --max-memory        Max memory to use by Trinity. [32G]
+  -v, --version       show program's version number and exit
 ```
 
