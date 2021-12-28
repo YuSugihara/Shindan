@@ -14,16 +14,10 @@ ADAPTER_FASTA=$8
 
 
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
-
-mkdir -p ${OUT_DIR}
-
-cd ${OUT_DIR}
-
-OUT_DIR=`pwd`
+OUT_DIR=`cd ${OUT_DIR}; pwd`
 
 mkdir -p ${OUT_DIR}/00_fastq
 
-cd ${OUT_DIR}/00_fastq
 
 if [ ${ADAPTER_FASTA} = "Default_adapter" ]
 then
@@ -47,8 +41,10 @@ do
     COLS=(${LINE})
 
     SAMPLE_TYPE=${COLS[0]}
-    FASTQ1=${SCRIPT_DIR}/${COLS[1]}
-    FASTQ2=${SCRIPT_DIR}/${COLS[2]}
+
+    
+    FASTQ1=${COLS[1]}
+    FASTQ2=${COLS[2]}
 
 
     mkdir -p ${OUT_DIR}/00_fastq/${SAMPLE_TYPE}${FASTQ_CNT}
