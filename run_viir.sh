@@ -378,26 +378,40 @@ do
              1> /dev/null
 
 
-    get_hmmscan_list ${PFAM_ID}/${PFAM_ID}_hmmscan.txt \
-                   > ${PFAM_ID}/${PFAM_ID}_hmmscan.isoform_list.txt
-
-    get_hmmscan_fasta ${PFAM_ID}/${PFAM_ID}_hmmscan.isoform_list.txt "TRUE"
-
-
     PREFIX=`get_prefix isoform FALSE`
 
     hmmscan  --cpu ${N_THREADS} \
-             --tblout ${PFAM_ID}/${PFAM_ID}_cooksCutoff_FALSE_hmmscan.txt \
+             --tblout ${PFAM_ID}/${PFAM_ID}_hmmscan.cooksCutoff_FALSE.txt \
              ${PFAM_ID}/${PFAM_ID}.hmm \
              ${PREFIX}.significant_isoforms.AA.fasta \
              1> /dev/null
 
-    get_hmmscan_list ${PFAM_ID}/${PFAM_ID}_cooksCutoff_FALSE_hmmscan.txt \
-                   > ${PFAM_ID}/${PFAM_ID}_cooksCutoff_FALSE_hmmscan.isoform_list.txt
+    get_hmmscan_list ${PFAM_ID}/${PFAM_ID}_hmmscan.txt \
+                   > ${PFAM_ID}/${PFAM_ID}_hmmscan.isoform_list.txt
 
-    get_hmmscan_fasta ${PFAM_ID}/${PFAM_ID}_cooksCutoff_FALSE_hmmscan.isoform_list.txt "FALSE"
+    get_hmmscan_list ${PFAM_ID}/${PFAM_ID}_hmmscan.cooksCutoff_FALSE.txt \
+                   > ${PFAM_ID}/${PFAM_ID}_hmmscan.cooksCutoff_FALSE.isoform_list.txt
+
+    get_hmmscan_fasta ${PFAM_ID}/${PFAM_ID}_hmmscan.isoform_list.txt "TRUE"
+    get_hmmscan_fasta ${PFAM_ID}/${PFAM_ID}_hmmscan.cooksCutoff_FALSE.isoform_list.txt "FALSE"
 
 done < ${PFAM_ID_LIST}
+
+
+cat ./*/*_hmmscan.isoform_list.txt | \
+sort | \
+uniq \
+> all_hmmscan.isoform_list.txt
+
+
+cat ./*/*_hmmscan.cooksCutoff_FALSE.isoform_list.txt | \
+sort | \
+uniq \
+> all_hmmscan.cooksCutoff_FALSE.isoform_list.txt 
+
+PFAM_ID="all"
+get_hmmscan_fasta all_hmmscan.isoform_list.txt "TRUE"
+get_hmmscan_fasta all_hmmscan.cooksCutoff_FALSE.isoform_list.txt  "FALSE"
 
 
 mv ${SCRIPT_DIR}/run_viir.sh ${OUT_DIR}
