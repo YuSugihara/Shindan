@@ -412,4 +412,8 @@ get_hmmscan_fasta all_hmmscan.isoform_list.txt "TRUE"
 get_hmmscan_fasta all_hmmscan.cooksCutoff_FALSE.isoform_list.txt  "FALSE"
 
 
+wget 
+python3 
+
+
 mv ${SCRIPT_DIR}/run_viir.sh ${OUT_DIR}
