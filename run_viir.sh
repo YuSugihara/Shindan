@@ -412,8 +412,11 @@ get_hmmscan_fasta all_hmmscan.isoform_list.txt "TRUE"
 get_hmmscan_fasta all_hmmscan.cooksCutoff_FALSE.isoform_list.txt  "FALSE"
 
 
-wget 
-python3 
+wget https://raw.githubusercontent.com/YuSugihara/ViiR/master/utils/generate_summary.py \
+     -O ${OUT_DIR}/60_fasta/generate_summary.py
+
+
+python3 ${OUT_DIR}/60_fasta/generate_summary.py ${OUT_DIR} > ${OUT_DIR}/60_fasta/summary_table.txt
 
 
 mv ${SCRIPT_DIR}/run_viir.sh ${OUT_DIR}
