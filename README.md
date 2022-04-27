@@ -72,9 +72,27 @@ optional arguments:
                       will be used.
   --pfam              List of Pfam IDs. If you don't specify
                       this option, the defaul list will be used.
-  --SS-lib-type       Type of strand specific library (No/FR/RF).
+  --SS-lib-type       Type of strand specific library (No/FR/RF) [No].
   --pvalue            Threshold of pvalue in DESeq2. [0.01]
   --max-memory        Max memory to use by Trinity. [32G]
   -v, --version       show program's version number and exit
 ```
 
+### Example 1 : Run ViiR with default settings
+
+```
+viir -l sample_list.txt \
+     -o result \
+```
+`-l` : Sample list describing the paired-end FASTQ files.
+
+`-o` : Name of the output directory. Specified name should not exist.
+
+### Example 2 : Run ViiR with default settings
+
+```
+viir -l sample_list.txt \
+     -o result \
+     -t 40 \
+     --max-memory 1000G
+```

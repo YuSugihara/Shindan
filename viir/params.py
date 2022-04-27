@@ -44,9 +44,9 @@ class Params(object):
         parser.add_argument('-t',
                             '--threads',
                             action='store',
-                            default=4,
+                            default=16,
                             type=int,
-                            help='Number of threads.',
+                            help='Number of threads. [16]',
                             metavar='')
 
         parser.add_argument('-a',
@@ -71,7 +71,7 @@ class Params(object):
                             action='store',
                             default='No',
                             type=str,
-                            help=('Type of strand specific library (No/FR/RF) [No].'),
+                            help=('Type of strand specific library (No/FR/RF). [No]'),
                             metavar='')
 
         parser.add_argument('--pvalue',
@@ -85,7 +85,7 @@ class Params(object):
                             action='store',
                             default='32G',
                             type=str,
-                            help=('Max memory to use by Trinity. [32G]'),
+                            help=('Max memory used in Trinity. [32G]'),
                             metavar='')
 
         # set version
