@@ -71,7 +71,7 @@ class Params(object):
                             action='store',
                             default='No',
                             type=str,
-                            help=('Type of strand specific library (No/FR/RF).'),
+                            help=('Type of strand specific library (No/FR/RF) [No].'),
                             metavar='')
 
         parser.add_argument('--pvalue',
