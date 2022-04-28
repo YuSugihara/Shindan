@@ -9,6 +9,7 @@
 - [Usage](#Usage)
   + [Example 1 : Run ViiR with default settings](#Example-1--Run-ViiR-with-default-settings)
   + [Example 2 : Run ViiR with more threads and CPU memories](#Example-1--Run-ViiR-with-more-threads-and-CPU-memories)
+  + [Example 3 : Run ViiR with strand specific library](#Example-1--Run-ViiR-with-strand-specific-library)
 
 
 ## What is ViiR?
@@ -115,7 +116,7 @@ viir -l sample_list.txt \
      -o result \
      -t 40 \
      --max-memory 1000G \
-     --SS-lib-type FR \
+     --SS-lib-type FR
 ```
 
 `-l` : Sample list describing the paired-end FASTQ files.
