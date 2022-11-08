@@ -360,7 +360,7 @@ do
 
     mkdir -p ${OUT_DIR}/50_hmmer/${PFAM_ID}
 
-    wget http://pfam.xfam.org/family/${PFAM_ID}/hmm \
+    wget https://pfam-legacy.xfam.org/family/${PFAM_ID}/hmm \
          -O ${PFAM_ID}/${PFAM_ID}.hmm
 
 
