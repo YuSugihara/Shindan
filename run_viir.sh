@@ -89,7 +89,7 @@ do
     FASTQ_CNT=$((FASTQ_CNT+1))
 
 
-done < ${SCRIPT_DIR}/${FASTQ_LIST}
+done < ${FASTQ_LIST}
 
 
 mkdir -p ${OUT_DIR}/10_trinity
