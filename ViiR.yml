@@ -2,10 +2,11 @@ name: ViiR
 channels:
   - bioconda
   - conda-forge
+  - anaconda
   - defaults
 dependencies:
   - trinity=2.13.2=bioconda
   - hmmer=3.3.2=bioconda
-  - wget=1.21.3=conda-forge
+  - wget=1.21.3=anaconda
   - bioconductor-deseq2=1.38.0=bioconda
   - rsem=1.3.3=bioconda
