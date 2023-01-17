@@ -8,6 +8,6 @@ dependencies:
   - trinity=2.13.2
   - hmmer=3.3.2
   - wget=1.21.3
-  - bioconductor-deseq2=1.38.0
+  - bioconductor-deseq2
   - rsem=1.3.3
   - barrnap=0.9
