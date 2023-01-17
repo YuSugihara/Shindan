@@ -1,4 +1,4 @@
-name: Viir
+name: ViiR
 channels:
   - bioconda
   - conda-forge
