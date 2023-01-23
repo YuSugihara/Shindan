@@ -30,6 +30,7 @@ ViiR is a software for 'Virus identification independent of Reference sequence'.
 - [DESeq2](https://bioconductor.org/packages/3.14/bioc/vignettes/DESeq2/inst/doc/DESeq2.html)
 - [edgeR](https://bioconductor.org/packages/release/bioc/html/edgeR.html)
 - [RSEM](https://deweylab.github.io/RSEM/)
+- [Biopython](https://biopython.org)
 
 
 ### Installation via bioconda

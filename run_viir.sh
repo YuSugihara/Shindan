@@ -413,10 +413,80 @@ get_hmmscan_fasta all_hmmscan.cooksCutoff_FALSE.isoform_list.txt  "FALSE"
 
 
 wget https://raw.githubusercontent.com/YuSugihara/ViiR/master/utils/generate_summary.py \
-     -O ${OUT_DIR}/60_fasta/generate_summary.py
+     -O ${OUT_DIR}/generate_summary.py
 
 
-python3 ${OUT_DIR}/60_fasta/generate_summary.py ${OUT_DIR} > ${OUT_DIR}/60_fasta/summary_table.txt
+python3 ${OUT_DIR}/generate_summary.py ${OUT_DIR}/60_fasta > ${OUT_DIR}/60_fasta/summary_table.txt
 
+
+mkdir -p ${OUT_DIR}/70_barrnap
+
+barrnap --quiet \
+        --kingdom bac \
+        ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.significant_isoforms.fasta \
+        > ${OUT_DIR}/70_barrnap/barrnap_result.bac.txt
+
+barrnap --quiet \
+        --kingdom euk \
+        ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.significant_isoforms.fasta \
+        > ${OUT_DIR}/70_barrnap/barrnap_result.euk.txt
+
+barrnap --quiet \
+        --kingdom bac \
+        ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result_cooksCutoff_FALSE/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE.significant_isoforms.fasta \
+        > ${OUT_DIR}/70_barrnap/barrnap_result.bac.cooksCutoff_FALSE.txt
+
+barrnap --quiet \
+        --kingdom euk \
+        ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result_cooksCutoff_FALSE/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE.significant_isoforms.fasta \
+        > ${OUT_DIR}/70_barrnap/barrnap_result.euk.cooksCutoff_FALSE.txt
+
+
+for cooksCutoff in "" ".cooksCutoff_FALSE"
+do
+  for rRNA in rRNA 5S_rRNA 16S_rRNA 23S_rRNA
+  do
+    cat ${OUT_DIR}/70_barrnap/barrnap_result.bac${cooksCutoff}.txt | \
+    grep -v "#" | \
+    grep ${rRNA} | \
+    cut -f 1 | \
+    sort | \
+    uniq > ${OUT_DIR}/70_barrnap/bac_${rRNA}${cooksCutoff}.txt
+
+    samtools faidx -r ${OUT_DIR}/70_barrnap/bac_${rRNA}${cooksCutoff}.txt \
+    ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result_cooksCutoff_FALSE/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE.significant_isoforms.fasta \
+    > ${OUT_DIR}/70_barrnap/bac_${rRNA}${cooksCutoff}.fasta
+  done
+done
+
+
+for cooksCutoff in "" ".cooksCutoff_FALSE"
+do
+  for rRNA in rRNA 5.8S_rRNA 18S_rRNA 28S_rRNA
+  do
+    cat ${OUT_DIR}/70_barrnap/barrnap_result.euk${cooksCutoff}.txt | \
+    grep -v "#" | \
+    grep ${rRNA} | \
+    cut -f 1 | \
+    sort | \
+    uniq > ${OUT_DIR}/70_barrnap/euk_${rRNA}${cooksCutoff}.txt
+
+    samtools faidx -r ${OUT_DIR}/70_barrnap/euk_${rRNA}${cooksCutoff}.txt \
+    ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result_cooksCutoff_FALSE/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE.significant_isoforms.fasta \
+    > ${OUT_DIR}/70_barrnap/euk_${rRNA}${cooksCutoff}.fasta
+  done
+done
+
+mv ${OUT_DIR}/70_barrnap/euk_rRNA.cooksCutoff_FALSE.fasta ${OUT_DIR}/70_barrnap/euk_all_rRNA.cooksCutoff_FALSE.fasta
+mv ${OUT_DIR}/70_barrnap/euk_rRNA.cooksCutoff_FALSE.txt ${OUT_DIR}/70_barrnap/euk_all_rRNA.cooksCutoff_FALSE.txt
+mv ${OUT_DIR}/70_barrnap/euk_rRNA.fasta ${OUT_DIR}/70_barrnap/euk_all_rRNA.fasta
+mv ${OUT_DIR}/70_barrnap/euk_rRNA.txt ${OUT_DIR}/70_barrnap/euk_all_rRNA.txt
+
+mv ${OUT_DIR}/70_barrnap/bac_rRNA.cooksCutoff_FALSE.fasta ${OUT_DIR}/70_barrnap/bac_all_rRNA.cooksCutoff_FALSE.fasta
+mv ${OUT_DIR}/70_barrnap/bac_rRNA.cooksCutoff_FALSE.txt ${OUT_DIR}/70_barrnap/bac_all_rRNA.cooksCutoff_FALSE.txt
+mv ${OUT_DIR}/70_barrnap/bac_rRNA.fasta ${OUT_DIR}/70_barrnap/bac_all_rRNA.fasta
+mv ${OUT_DIR}/70_barrnap/bac_rRNA.txt ${OUT_DIR}/70_barrnap/bac_all_rRNA.txt
+
+python3 ${OUT_DIR}/generate_summary.py ${OUT_DIR}/70_barrnap > ${OUT_DIR}/70_barrnap/rRNA_summary_table.txt
 
 mv ${SCRIPT_DIR}/run_viir.sh ${OUT_DIR}
