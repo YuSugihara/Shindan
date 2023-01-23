@@ -518,4 +518,31 @@ mv ${OUT_DIR}/80_kmer/*.isoform_list.txt ${OUT_DIR}/80_kmer/isoform_list
 
 python3 ${OUT_DIR}/generate_summary.py ${OUT_DIR}/80_kmer > ${OUT_DIR}/80_kmer/kmer_summary_table.txt
 
+
+mkdir -p ${OUT_DIR}/90_blastn/blastndb
+cd ${OUT_DIR}/90_blastn/blastndb
+ln -s ${BLASTNDB_FASTA}
+
+makeblastdb -dbtype nucl \
+            -in `basename ${BLASTNDB_FASTA}` \
+            -parse_seqids \
+            -out `basename ${BLASTNDB_FASTA}`
+
+cd ${OUT_DIR}/90_blastn/
+
+blastn -db ${OUT_DIR}/90_blastn/blastndb/`basename ${BLASTNDB_FASTA}` \
+       -query ${OUT_DIR}/10_trinity/trinity_assembly.Trinity.fasta \
+       -out blastn_result.tsv \
+       -qcov_hsp_perc 40 \
+       -evalue 0.001 \
+       -max_target_seqs 1 \
+       -outfmt "6 qseqid sacc stitle evalue bitscore length pident qcovs"
+
+cut -f 1 blastn_result.tsv > blastn_result.isoform_list.txt
+samtools faidx -r blastn_result.isoform_list.txt \
+${OUT_DIR}/10_trinity/trinity_assembly.Trinity.fasta \
+> blastn_result.isoform_list.fasta
+
+rm -rf ${OUT_DIR}/90_blastn/blastndb/*.fasta.*
+
 mv ${SCRIPT_DIR}/run_viir.sh ${OUT_DIR}
