@@ -419,7 +419,7 @@ wget https://raw.githubusercontent.com/YuSugihara/ViiR/master/utils/generate_sum
 python3 ${OUT_DIR}/generate_summary.py ${OUT_DIR}/60_fasta > ${OUT_DIR}/60_fasta/summary_table.txt
 
 
-mkdir -p ${OUT_DIR}/70_barrnap
+mkdir -p ${OUT_DIR}/70_barrnap/isoform_list
 
 barrnap --quiet \
         --kingdom bac \
@@ -451,9 +451,9 @@ do
     grep ${rRNA} | \
     cut -f 1 | \
     sort | \
-    uniq > ${OUT_DIR}/70_barrnap/bac_${rRNA}${cooksCutoff}.txt
+    uniq > ${OUT_DIR}/70_barrnap/bac_${rRNA}${cooksCutoff}.isoform_list.txt
 
-    samtools faidx -r ${OUT_DIR}/70_barrnap/bac_${rRNA}${cooksCutoff}.txt \
+    samtools faidx -r ${OUT_DIR}/70_barrnap/bac_${rRNA}${cooksCutoff}.isoform_list.txt \
     ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result_cooksCutoff_FALSE/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE.significant_isoforms.fasta \
     > ${OUT_DIR}/70_barrnap/bac_${rRNA}${cooksCutoff}.fasta
   done
@@ -469,24 +469,53 @@ do
     grep ${rRNA} | \
     cut -f 1 | \
     sort | \
-    uniq > ${OUT_DIR}/70_barrnap/euk_${rRNA}${cooksCutoff}.txt
+    uniq > ${OUT_DIR}/70_barrnap/euk_${rRNA}${cooksCutoff}.isoform_list.txt
 
-    samtools faidx -r ${OUT_DIR}/70_barrnap/euk_${rRNA}${cooksCutoff}.txt \
+    samtools faidx -r ${OUT_DIR}/70_barrnap/euk_${rRNA}${cooksCutoff}.isoform_list.txt \
     ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result_cooksCutoff_FALSE/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE.significant_isoforms.fasta \
     > ${OUT_DIR}/70_barrnap/euk_${rRNA}${cooksCutoff}.fasta
   done
 done
 
 mv ${OUT_DIR}/70_barrnap/euk_rRNA.cooksCutoff_FALSE.fasta ${OUT_DIR}/70_barrnap/euk_all_rRNA.cooksCutoff_FALSE.fasta
-mv ${OUT_DIR}/70_barrnap/euk_rRNA.cooksCutoff_FALSE.txt ${OUT_DIR}/70_barrnap/euk_all_rRNA.cooksCutoff_FALSE.txt
+mv ${OUT_DIR}/70_barrnap/euk_rRNA.cooksCutoff_FALSE.isoform_list.txt ${OUT_DIR}/70_barrnap/euk_all_rRNA.cooksCutoff_FALSE.isoform_list.txt
 mv ${OUT_DIR}/70_barrnap/euk_rRNA.fasta ${OUT_DIR}/70_barrnap/euk_all_rRNA.fasta
-mv ${OUT_DIR}/70_barrnap/euk_rRNA.txt ${OUT_DIR}/70_barrnap/euk_all_rRNA.txt
+mv ${OUT_DIR}/70_barrnap/euk_rRNA.isoform_list.txt ${OUT_DIR}/70_barrnap/euk_all_rRNA.isoform_list.txt
 
 mv ${OUT_DIR}/70_barrnap/bac_rRNA.cooksCutoff_FALSE.fasta ${OUT_DIR}/70_barrnap/bac_all_rRNA.cooksCutoff_FALSE.fasta
-mv ${OUT_DIR}/70_barrnap/bac_rRNA.cooksCutoff_FALSE.txt ${OUT_DIR}/70_barrnap/bac_all_rRNA.cooksCutoff_FALSE.txt
+mv ${OUT_DIR}/70_barrnap/bac_rRNA.cooksCutoff_FALSE.isoform_list.txt ${OUT_DIR}/70_barrnap/bac_all_rRNA.cooksCutoff_FALSE.isoform_list.txt
 mv ${OUT_DIR}/70_barrnap/bac_rRNA.fasta ${OUT_DIR}/70_barrnap/bac_all_rRNA.fasta
-mv ${OUT_DIR}/70_barrnap/bac_rRNA.txt ${OUT_DIR}/70_barrnap/bac_all_rRNA.txt
+mv ${OUT_DIR}/70_barrnap/bac_rRNA.isoform_list.txt ${OUT_DIR}/70_barrnap/bac_all_rRNA.isoform_list.txt
+
+mv ${OUT_DIR}/70_barrnap/*.isoform_list.txt ${OUT_DIR}/70_barrnap/isoform_list
 
 python3 ${OUT_DIR}/generate_summary.py ${OUT_DIR}/70_barrnap > ${OUT_DIR}/70_barrnap/rRNA_summary_table.txt
+
+
+mkdir -p ${OUT_DIR}/80_kmer/isoform_list
+
+wget https://raw.githubusercontent.com/YuSugihara/ViiR/master/utils/count_kmers.py \
+     -O ${OUT_DIR}/count_kmers.py
+
+for KMER in 100 150 200
+do
+  python3 ${OUT_DIR}/count_kmers.py ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.significant_isoforms.fasta ${KMER} 2 \
+  > ${OUT_DIR}/80_kmer/kmer_${KMER}.isoform_list.txt
+  
+  python3 ${OUT_DIR}/count_kmers.py ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result_cooksCutoff_FALSE/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE.significant_isoforms.fasta ${KMER} 2 \
+  > ${OUT_DIR}/80_kmer/kmer_${KMER}.cooksCutoff_FALSE.isoform_list.txt
+
+  samtools faidx -r ${OUT_DIR}/80_kmer/kmer_${KMER}.isoform_list.txt \
+  ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.significant_isoforms.fasta \
+  > ${OUT_DIR}/80_kmer/kmer_${KMER}.fasta
+
+  samtools faidx -r ${OUT_DIR}/80_kmer/kmer_${KMER}.cooksCutoff_FALSE.isoform_list.txt \
+  ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result_cooksCutoff_FALSE/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE.significant_isoforms.fasta \
+  > ${OUT_DIR}/80_kmer/kmer_${KMER}.cooksCutoff_FALSE.fasta
+done
+
+mv ${OUT_DIR}/80_kmer/*.isoform_list.txt ${OUT_DIR}/80_kmer/isoform_list
+
+python3 ${OUT_DIR}/generate_summary.py ${OUT_DIR}/80_kmer > ${OUT_DIR}/80_kmer/kmer_summary_table.txt
 
 mv ${SCRIPT_DIR}/run_viir.sh ${OUT_DIR}
