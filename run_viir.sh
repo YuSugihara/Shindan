@@ -499,10 +499,10 @@ wget https://raw.githubusercontent.com/YuSugihara/ViiR/master/utils/count_kmers.
 
 for KMER in 100 150 200
 do
-  python3 ${OUT_DIR}/count_kmers.py ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.significant_isoforms.fasta ${KMER} 2 \
+  python3 ${OUT_DIR}/count_kmers.py ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.significant_isoforms.fasta ${KMER} 2 1000 \
   > ${OUT_DIR}/80_kmer/kmer_${KMER}.isoform_list.txt
   
-  python3 ${OUT_DIR}/count_kmers.py ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result_cooksCutoff_FALSE/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE.significant_isoforms.fasta ${KMER} 2 \
+  python3 ${OUT_DIR}/count_kmers.py ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result_cooksCutoff_FALSE/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE.significant_isoforms.fasta ${KMER} 2 2000 \
   > ${OUT_DIR}/80_kmer/kmer_${KMER}.cooksCutoff_FALSE.isoform_list.txt
 
   samtools faidx -r ${OUT_DIR}/80_kmer/kmer_${KMER}.isoform_list.txt \
@@ -544,5 +544,9 @@ ${OUT_DIR}/10_trinity/trinity_assembly.Trinity.fasta \
 > blastn_result.isoform_list.fasta
 
 rm -rf ${OUT_DIR}/90_blastn/blastndb/*.fasta.*
+cd ${OUT_DIR}/90_blastn/blastndb
+unlink `basename ${BLASTNDB_FASTA}`
+cd ..
+rm -rf blastndb
 
 mv ${SCRIPT_DIR}/run_viir.sh ${OUT_DIR}
