@@ -415,6 +415,7 @@ get_hmmscan_fasta all_hmmscan.cooksCutoff_FALSE.isoform_list.txt  "FALSE"
 wget https://raw.githubusercontent.com/YuSugihara/ViiR/master/utils/generate_summary.py \
      -O ${OUT_DIR}/generate_summary.py
 
+cd ${OUT_DIR}
 
 python3 ${OUT_DIR}/generate_summary.py ${OUT_DIR}/60_fasta > ${OUT_DIR}/60_fasta/summary_table.txt
 
