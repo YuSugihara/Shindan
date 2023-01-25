@@ -475,7 +475,17 @@ do
   done
 done
 
-mv -f ${OUT_DIR}/70_barrnap/*.isoform_list.txt ${OUT_DIR}/70_barrnap/isoform_list
+mv ${OUT_DIR}/70_barrnap/euk_rRNA.cooksCutoff_FALSE.fasta ${OUT_DIR}/70_barrnap/euk_all_rRNA.cooksCutoff_FALSE.fasta
+mv ${OUT_DIR}/70_barrnap/euk_rRNA.cooksCutoff_FALSE.isoform_list.txt ${OUT_DIR}/70_barrnap/euk_all_rRNA.cooksCutoff_FALSE.isoform_list.txt
+mv ${OUT_DIR}/70_barrnap/euk_rRNA.fasta ${OUT_DIR}/70_barrnap/euk_all_rRNA.fasta
+mv ${OUT_DIR}/70_barrnap/euk_rRNA.isoform_list.txt ${OUT_DIR}/70_barrnap/euk_all_rRNA.isoform_list.txt
+
+mv ${OUT_DIR}/70_barrnap/bac_rRNA.cooksCutoff_FALSE.fasta ${OUT_DIR}/70_barrnap/bac_all_rRNA.cooksCutoff_FALSE.fasta
+mv ${OUT_DIR}/70_barrnap/bac_rRNA.cooksCutoff_FALSE.isoform_list.txt ${OUT_DIR}/70_barrnap/bac_all_rRNA.cooksCutoff_FALSE.isoform_list.txt
+mv ${OUT_DIR}/70_barrnap/bac_rRNA.fasta ${OUT_DIR}/70_barrnap/bac_all_rRNA.fasta
+mv ${OUT_DIR}/70_barrnap/bac_rRNA.isoform_list.txt ${OUT_DIR}/70_barrnap/bac_all_rRNA.isoform_list.txt
+
+mv ${OUT_DIR}/70_barrnap/*.isoform_list.txt ${OUT_DIR}/70_barrnap/isoform_list
 
 python3 ${OUT_DIR}/generate_summary.py ${OUT_DIR}/70_barrnap > ${OUT_DIR}/70_barrnap/rRNA_summary_table.txt
 
@@ -493,13 +503,19 @@ do
   python3 ${OUT_DIR}/count_kmers.py ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result_cooksCutoff_FALSE/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE.significant_isoforms.fasta ${KMER} 2 2000 \
   > ${OUT_DIR}/80_kmer/kmer_${KMER}.cooksCutoff_FALSE.isoform_list.txt
 
-  samtools faidx -r ${OUT_DIR}/80_kmer/kmer_${KMER}.isoform_list.txt \
-  ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.significant_isoforms.fasta \
-  > ${OUT_DIR}/80_kmer/kmer_${KMER}.fasta
+  if [ `cat ${OUT_DIR}/80_kmer/kmer_${KMER}.isoform_list.txt | wc -l` -gt 0 ]
+  then
+    samtools faidx -r ${OUT_DIR}/80_kmer/kmer_${KMER}.isoform_list.txt \
+    ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.significant_isoforms.fasta \
+    > ${OUT_DIR}/80_kmer/kmer_${KMER}.fasta
+  fi
 
-  samtools faidx -r ${OUT_DIR}/80_kmer/kmer_${KMER}.cooksCutoff_FALSE.isoform_list.txt \
-  ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result_cooksCutoff_FALSE/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE.significant_isoforms.fasta \
-  > ${OUT_DIR}/80_kmer/kmer_${KMER}.cooksCutoff_FALSE.fasta
+  if [ `cat ${OUT_DIR}/80_kmer/kmer_${KMER}.cooksCutoff_FALSE.isoform_list.txt | wc -l` -gt 0 ]
+  then
+    samtools faidx -r ${OUT_DIR}/80_kmer/kmer_${KMER}.cooksCutoff_FALSE.isoform_list.txt \
+    ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result_cooksCutoff_FALSE/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE.significant_isoforms.fasta \
+    > ${OUT_DIR}/80_kmer/kmer_${KMER}.cooksCutoff_FALSE.fasta
+  fi
 done
 
 mv ${OUT_DIR}/80_kmer/*.isoform_list.txt ${OUT_DIR}/80_kmer/isoform_list
@@ -527,9 +543,13 @@ blastn -db ${OUT_DIR}/90_blastn/blastndb/`basename ${BLASTNDB_FASTA}` \
        -outfmt "6 qseqid sacc stitle evalue bitscore length pident qcovs"
 
 cut -f 1 blastn_result.tsv > blastn_result.isoform_list.txt
-samtools faidx -r blastn_result.isoform_list.txt \
-${OUT_DIR}/10_trinity/trinity_assembly.Trinity.fasta \
-> blastn_result.isoform_list.fasta
+
+if [ `cat blastn_result.isoform_list.txt | wc -l` -gt 0 ]
+then
+  samtools faidx -r blastn_result.isoform_list.txt \
+  ${OUT_DIR}/10_trinity/trinity_assembly.Trinity.fasta \
+  > blastn_result.isoform_list.fasta
+fi
 
 rm -rf ${OUT_DIR}/90_blastn/blastndb/*.fasta.*
 cd ${OUT_DIR}/90_blastn/blastndb
