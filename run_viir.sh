@@ -2,20 +2,17 @@
 
 
 ######################### Parameters #####################################
-OUT_DIR=$1
-FASTQ_LIST=$2
+OUT_DIR=$(cd $(dirname $1); pwd)/$(basename $1)
+FASTQ_LIST=$(cd $(dirname $2); pwd)/$(basename $2)
 PVALUE=$3
 PFAM_ID_LIST=$4
 N_THREADS=$5
 MAX_MEMORY=$6
 SS_LIB_TYPE=$7
-ADAPTER_FASTA=$8
+ADAPTER_FASTA=$(cd $(dirname $8); pwd)/$(basename $8)
 ##########################################################################
 
 mkdir -p ${OUT_DIR}/00_fastq
-cd ${OUT_DIR}
-OUT_DIR=$(cd $(dirname $0); pwd)
-echo ${OUT_DIR}
 
 if [ ${ADAPTER_FASTA} = "Default_adapter" ]
 then
