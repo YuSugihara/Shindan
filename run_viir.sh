@@ -15,10 +15,9 @@ ADAPTER_FASTA=$8
 mkdir -p ${OUT_DIR}/00_fastq
 
 
-SCRIPT_DIR=$(cd $(dirname $0); pwd)
-OUT_DIR=`cd ${OUT_DIR}; pwd`
+OUT_DIR=$(cd $(dirname $0); pwd)
 
-cd ${SCRIPT_DIR}
+cd ${OUT_DIR}
 
 
 if [ ${ADAPTER_FASTA} = "Default_adapter" ]
@@ -450,7 +449,7 @@ do
     sort | \
     uniq > ${OUT_DIR}/70_barrnap/bac_${rRNA}${cooksCutoff}.isoform_list.txt
     
-    if [ `cat ${ISOFORM_LIST} | wc -l` -gt 0 ]
+    if [ `cat ${OUT_DIR}/70_barrnap/bac_${rRNA}${cooksCutoff}.isoform_list.txt | wc -l` -gt 0 ]
     then
       samtools faidx -r ${OUT_DIR}/70_barrnap/bac_${rRNA}${cooksCutoff}.isoform_list.txt \
       ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result_cooksCutoff_FALSE/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE.significant_isoforms.fasta \
@@ -470,7 +469,7 @@ do
     sort | \
     uniq > ${OUT_DIR}/70_barrnap/euk_${rRNA}${cooksCutoff}.isoform_list.txt
 
-    if [ `cat ${ISOFORM_LIST} | wc -l` -gt 0 ]
+    if [ `cat ${OUT_DIR}/70_barrnap/euk_${rRNA}${cooksCutoff}.isoform_list.txt | wc -l` -gt 0 ]
     then
       samtools faidx -r ${OUT_DIR}/70_barrnap/euk_${rRNA}${cooksCutoff}.isoform_list.txt \
       ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result_cooksCutoff_FALSE/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE.significant_isoforms.fasta \
@@ -540,5 +539,3 @@ cd ${OUT_DIR}/90_blastn/blastndb
 unlink `basename ${BLASTNDB_FASTA}`
 cd ..
 rm -rf blastndb
-
-mv ${SCRIPT_DIR}/run_viir.sh ${OUT_DIR}
