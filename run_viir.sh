@@ -422,23 +422,19 @@ python3 ${OUT_DIR}/generate_summary.py ${OUT_DIR}/60_fasta > ${OUT_DIR}/60_fasta
 
 mkdir -p ${OUT_DIR}/70_barrnap/isoform_list
 
-barrnap --quiet \
-        --kingdom bac \
+barrnap --kingdom bac \
         ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.significant_isoforms.fasta \
         > ${OUT_DIR}/70_barrnap/barrnap_result.bac.txt
 
-barrnap --quiet \
-        --kingdom euk \
+barrnap --kingdom euk \
         ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.significant_isoforms.fasta \
         > ${OUT_DIR}/70_barrnap/barrnap_result.euk.txt
 
-barrnap --quiet \
-        --kingdom bac \
+barrnap --kingdom bac \
         ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result_cooksCutoff_FALSE/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE.significant_isoforms.fasta \
         > ${OUT_DIR}/70_barrnap/barrnap_result.bac.cooksCutoff_FALSE.txt
 
-barrnap --quiet \
-        --kingdom euk \
+barrnap --kingdom euk \
         ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result_cooksCutoff_FALSE/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE.significant_isoforms.fasta \
         > ${OUT_DIR}/70_barrnap/barrnap_result.euk.cooksCutoff_FALSE.txt
 
