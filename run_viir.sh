@@ -448,6 +448,8 @@ do
       samtools faidx -r ${OUT_DIR}/70_barrnap/bac_${rRNA}${cooksCutoff}.isoform_list.txt \
       ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result_cooksCutoff_FALSE/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE.significant_isoforms.fasta \
       > ${OUT_DIR}/70_barrnap/bac_${rRNA}${cooksCutoff}.fasta
+    else
+      touch ${OUT_DIR}/70_barrnap/bac_${rRNA}${cooksCutoff}.fasta
     fi
   done
 done
@@ -468,6 +470,8 @@ do
       samtools faidx -r ${OUT_DIR}/70_barrnap/euk_${rRNA}${cooksCutoff}.isoform_list.txt \
       ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result_cooksCutoff_FALSE/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE.significant_isoforms.fasta \
       > ${OUT_DIR}/70_barrnap/euk_${rRNA}${cooksCutoff}.fasta
+    else
+      touch ${OUT_DIR}/70_barrnap/euk_${rRNA}${cooksCutoff}.fasta
     fi
   done
 done
