@@ -27,7 +27,7 @@ class ViiR(object):
                                                                                       self.args.max_memory, \
                                                                                       self.args.SS_lib_type, \
                                                                                       self.args.adapter, \
-                                                                                      self.args.blastdb)
+                                                                                      self.args.blastndb)
 
         print(cmd1, file=sys.stderr, flush=True)
         sbp.run(cmd1,

@@ -9,9 +9,19 @@ PFAM_ID_LIST=$4
 N_THREADS=$5
 MAX_MEMORY=$6
 SS_LIB_TYPE=$7
-ADAPTER_FASTA=$(cd $(dirname $8); pwd)/$(basename $8)
-BLASTDB_FASTA=$(cd $(dirname $9); pwd)/$(basename $9)
+ADAPTER_FASTA=$8
+BLASTNDB_FASTA=$9
 ##########################################################################
+
+if [ ${ADAPTER_FASTA} != "Default_adapter" ]
+then
+    ADAPTER_FASTA=$(cd $(dirname $8); pwd)/$(basename $8)
+fi
+
+if [ ${BLASTNDB_FASTA} != "Default_db" ]
+then
+    BLASTNDB_FASTA=$(cd $(dirname $9); pwd)/$(basename $9)
+fi
 
 mkdir -p ${OUT_DIR}/00_fastq
 
@@ -531,13 +541,14 @@ python3 ${OUT_DIR}/generate_summary.py ${OUT_DIR}/80_kmer > ${OUT_DIR}/80_kmer/k
 mkdir -p ${OUT_DIR}/90_blastn/blastndb
 cd ${OUT_DIR}/90_blastn/blastndb
 
-if [ ${BLASTDB_FASTA} = "Default_db" ]
+if [ ${BLASTNDB_FASTA} = "Default_db" ]
 then
   git clone https://github.com/YuSugihara/ViiR_DB.git
   cd ViiR_DB
   cat ./NCBI_Virus_RefSeq_nuc-23-01-23.*.fasta.gz > ../NCBI_Virus_RefSeq_nuc-23-01-23.fasta.gz
+  cd ..
   gzip -d NCBI_Virus_RefSeq_nuc-23-01-23.fasta.gz
-  BLASTDB_FASTA=${OUT_DIR}/90_blastn/blastndb/NCBI_Virus_RefSeq_nuc-23-01-23.fasta
+  BLASTNDB_FASTA=${OUT_DIR}/90_blastn/blastndb/NCBI_Virus_RefSeq_nuc-23-01-23.fasta
 else
   ln -s ${BLASTNDB_FASTA}
 fi
@@ -569,10 +580,10 @@ fi
 
 rm -rf ${OUT_DIR}/90_blastn/blastndb/*.fasta.*
 cd ${OUT_DIR}/90_blastn/blastndb
-if [ ${BLASTDB_FASTA} = "Default_db" ]
+if [ ${BLASTNDB_FASTA} = "Default_db" ]
 then
   rm -rf ${BLASTNDB_FASTA}
-  BLASTDB_FASTA=${OUT_DIR}/90_blastn/blastndb/adapter.fasta
+  BLASTNDB_FASTA=${OUT_DIR}/90_blastn/blastndb/adapter.fasta
 else
   unlink `basename ${BLASTNDB_FASTA}`
 fi

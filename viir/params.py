@@ -74,7 +74,7 @@ class Params(object):
                             help=('Type of strand specific library (No/FR/RF). [No]'),
                             metavar='')
 
-        parser.add_argument('--blastdb',
+        parser.add_argument('--blastndb',
                             action='store',
                             default='Default_db',
                             type=str,
