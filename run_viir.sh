@@ -14,6 +14,7 @@ ADAPTER_FASTA=$8
 
 cd ${OUT_DIR}
 OUT_DIR=$(cd $(dirname $0); pwd)
+echo ${OUT_DIR}
 
 mkdir -p ${OUT_DIR}/00_fastq
 
