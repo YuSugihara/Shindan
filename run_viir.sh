@@ -12,13 +12,10 @@ SS_LIB_TYPE=$7
 ADAPTER_FASTA=$8
 ##########################################################################
 
-mkdir -p ${OUT_DIR}/00_fastq
-
-
 OUT_DIR=$(cd $(dirname $0); pwd)
-
 cd ${OUT_DIR}
 
+mkdir -p ${OUT_DIR}/00_fastq
 
 if [ ${ADAPTER_FASTA} = "Default_adapter" ]
 then
