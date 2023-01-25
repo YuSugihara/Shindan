@@ -12,9 +12,8 @@ SS_LIB_TYPE=$7
 ADAPTER_FASTA=$8
 ##########################################################################
 
-OUT_DIR=$(cd $(dirname $0); pwd)
 cd ${OUT_DIR}
-echo ${OUT_DIR}
+OUT_DIR=$(cd $(dirname $0); pwd)
 
 mkdir -p ${OUT_DIR}/00_fastq
 
