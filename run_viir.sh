@@ -10,6 +10,7 @@ N_THREADS=$5
 MAX_MEMORY=$6
 SS_LIB_TYPE=$7
 ADAPTER_FASTA=$(cd $(dirname $8); pwd)/$(basename $8)
+BLASTDB_FASTA=$(cd $(dirname $9); pwd)/$(basename $9)
 ##########################################################################
 
 mkdir -p ${OUT_DIR}/00_fastq
@@ -473,6 +474,9 @@ do
     else
       touch ${OUT_DIR}/70_barrnap/euk_${rRNA}${cooksCutoff}.fasta
     fi
+
+
+
   done
 done
 
@@ -526,7 +530,17 @@ python3 ${OUT_DIR}/generate_summary.py ${OUT_DIR}/80_kmer > ${OUT_DIR}/80_kmer/k
 
 mkdir -p ${OUT_DIR}/90_blastn/blastndb
 cd ${OUT_DIR}/90_blastn/blastndb
-ln -s ${BLASTNDB_FASTA}
+
+if [ ${BLASTDB_FASTA} = "Default_db" ]
+then
+  git clone https://github.com/YuSugihara/ViiR_DB.git
+  cd ViiR_DB
+  cat ./NCBI_Virus_RefSeq_nuc-23-01-23.*.fasta.gz > ../NCBI_Virus_RefSeq_nuc-23-01-23.fasta.gz
+  gzip -d NCBI_Virus_RefSeq_nuc-23-01-23.fasta.gz
+  BLASTDB_FASTA=${OUT_DIR}/90_blastn/blastndb/NCBI_Virus_RefSeq_nuc-23-01-23.fasta
+else
+  ln -s ${BLASTNDB_FASTA}
+fi
 
 makeblastdb -dbtype nucl \
             -in `basename ${BLASTNDB_FASTA}` \
@@ -541,6 +555,7 @@ blastn -db ${OUT_DIR}/90_blastn/blastndb/`basename ${BLASTNDB_FASTA}` \
        -qcov_hsp_perc 40 \
        -evalue 0.001 \
        -max_target_seqs 1 \
+       -num_threads ${N_THREADS} \
        -outfmt "6 qseqid sacc stitle evalue bitscore length pident qcovs"
 
 cut -f 1 blastn_result.tsv > blastn_result.isoform_list.txt
@@ -554,6 +569,12 @@ fi
 
 rm -rf ${OUT_DIR}/90_blastn/blastndb/*.fasta.*
 cd ${OUT_DIR}/90_blastn/blastndb
-unlink `basename ${BLASTNDB_FASTA}`
+if [ ${BLASTDB_FASTA} = "Default_db" ]
+then
+  rm -rf ${BLASTNDB_FASTA}
+  BLASTDB_FASTA=${OUT_DIR}/90_blastn/blastndb/adapter.fasta
+else
+  unlink `basename ${BLASTNDB_FASTA}`
+fi
 cd ..
 rm -rf blastndb

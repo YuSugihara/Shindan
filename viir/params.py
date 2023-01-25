@@ -74,6 +74,13 @@ class Params(object):
                             help=('Type of strand specific library (No/FR/RF). [No]'),
                             metavar='')
 
+        parser.add_argument('--blastdb',
+                            action='store',
+                            default='Default_db',
+                            type=str,
+                            help=('FASTA to annotate your trinity assembly.'),
+                            metavar='')
+
         parser.add_argument('--pvalue',
                             action='store',
                             default=0.01,
