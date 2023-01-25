@@ -449,13 +449,15 @@ do
     cut -f 1 | \
     sort | \
     uniq > ${OUT_DIR}/70_barrnap/bac_${rRNA}${cooksCutoff}.isoform_list.txt
-
-    samtools faidx -r ${OUT_DIR}/70_barrnap/bac_${rRNA}${cooksCutoff}.isoform_list.txt \
-    ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result_cooksCutoff_FALSE/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE.significant_isoforms.fasta \
-    > ${OUT_DIR}/70_barrnap/bac_${rRNA}${cooksCutoff}.fasta
+    
+    if [ `cat ${ISOFORM_LIST} | wc -l` -gt 0 ]
+    then
+      samtools faidx -r ${OUT_DIR}/70_barrnap/bac_${rRNA}${cooksCutoff}.isoform_list.txt \
+      ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result_cooksCutoff_FALSE/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE.significant_isoforms.fasta \
+      > ${OUT_DIR}/70_barrnap/bac_${rRNA}${cooksCutoff}.fasta
+    fi
   done
 done
-
 
 for cooksCutoff in "" ".cooksCutoff_FALSE"
 do
@@ -468,23 +470,26 @@ do
     sort | \
     uniq > ${OUT_DIR}/70_barrnap/euk_${rRNA}${cooksCutoff}.isoform_list.txt
 
-    samtools faidx -r ${OUT_DIR}/70_barrnap/euk_${rRNA}${cooksCutoff}.isoform_list.txt \
-    ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result_cooksCutoff_FALSE/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE.significant_isoforms.fasta \
-    > ${OUT_DIR}/70_barrnap/euk_${rRNA}${cooksCutoff}.fasta
+    if [ `cat ${ISOFORM_LIST} | wc -l` -gt 0 ]
+    then
+      samtools faidx -r ${OUT_DIR}/70_barrnap/euk_${rRNA}${cooksCutoff}.isoform_list.txt \
+      ${OUT_DIR}/40_DEGseq2/DEGseq2_isoform_result_cooksCutoff_FALSE/RSEM.isoform.counts.matrix.N_vs_V.DESeq2.DE_results.cooksCutoff_FALSE.significant_isoforms.fasta \
+      > ${OUT_DIR}/70_barrnap/euk_${rRNA}${cooksCutoff}.fasta
+    fi
   done
 done
 
-mv ${OUT_DIR}/70_barrnap/euk_rRNA.cooksCutoff_FALSE.fasta ${OUT_DIR}/70_barrnap/euk_all_rRNA.cooksCutoff_FALSE.fasta
-mv ${OUT_DIR}/70_barrnap/euk_rRNA.cooksCutoff_FALSE.isoform_list.txt ${OUT_DIR}/70_barrnap/euk_all_rRNA.cooksCutoff_FALSE.isoform_list.txt
-mv ${OUT_DIR}/70_barrnap/euk_rRNA.fasta ${OUT_DIR}/70_barrnap/euk_all_rRNA.fasta
-mv ${OUT_DIR}/70_barrnap/euk_rRNA.isoform_list.txt ${OUT_DIR}/70_barrnap/euk_all_rRNA.isoform_list.txt
+mv -f ${OUT_DIR}/70_barrnap/euk_rRNA.cooksCutoff_FALSE.fasta ${OUT_DIR}/70_barrnap/euk_all_rRNA.cooksCutoff_FALSE.fasta
+mv -f ${OUT_DIR}/70_barrnap/euk_rRNA.cooksCutoff_FALSE.isoform_list.txt ${OUT_DIR}/70_barrnap/euk_all_rRNA.cooksCutoff_FALSE.isoform_list.txt
+mv -f ${OUT_DIR}/70_barrnap/euk_rRNA.fasta ${OUT_DIR}/70_barrnap/euk_all_rRNA.fasta
+mv -f ${OUT_DIR}/70_barrnap/euk_rRNA.isoform_list.txt ${OUT_DIR}/70_barrnap/euk_all_rRNA.isoform_list.txt
 
-mv ${OUT_DIR}/70_barrnap/bac_rRNA.cooksCutoff_FALSE.fasta ${OUT_DIR}/70_barrnap/bac_all_rRNA.cooksCutoff_FALSE.fasta
-mv ${OUT_DIR}/70_barrnap/bac_rRNA.cooksCutoff_FALSE.isoform_list.txt ${OUT_DIR}/70_barrnap/bac_all_rRNA.cooksCutoff_FALSE.isoform_list.txt
-mv ${OUT_DIR}/70_barrnap/bac_rRNA.fasta ${OUT_DIR}/70_barrnap/bac_all_rRNA.fasta
-mv ${OUT_DIR}/70_barrnap/bac_rRNA.isoform_list.txt ${OUT_DIR}/70_barrnap/bac_all_rRNA.isoform_list.txt
+mv -f ${OUT_DIR}/70_barrnap/bac_rRNA.cooksCutoff_FALSE.fasta ${OUT_DIR}/70_barrnap/bac_all_rRNA.cooksCutoff_FALSE.fasta
+mv -f ${OUT_DIR}/70_barrnap/bac_rRNA.cooksCutoff_FALSE.isoform_list.txt ${OUT_DIR}/70_barrnap/bac_all_rRNA.cooksCutoff_FALSE.isoform_list.txt
+mv -f ${OUT_DIR}/70_barrnap/bac_rRNA.fasta ${OUT_DIR}/70_barrnap/bac_all_rRNA.fasta
+mv -f ${OUT_DIR}/70_barrnap/bac_rRNA.isoform_list.txt ${OUT_DIR}/70_barrnap/bac_all_rRNA.isoform_list.txt
 
-mv ${OUT_DIR}/70_barrnap/*.isoform_list.txt ${OUT_DIR}/70_barrnap/isoform_list
+mv -f ${OUT_DIR}/70_barrnap/*.isoform_list.txt ${OUT_DIR}/70_barrnap/isoform_list
 
 python3 ${OUT_DIR}/generate_summary.py ${OUT_DIR}/70_barrnap > ${OUT_DIR}/70_barrnap/rRNA_summary_table.txt
 
