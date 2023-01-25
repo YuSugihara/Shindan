@@ -15,6 +15,7 @@ ADAPTER_FASTA=$8
 mkdir -p ${OUT_DIR}/00_fastq
 cd ${OUT_DIR}
 OUT_DIR=$(cd $(dirname $0); pwd)
+echo ${OUT_DIR}
 
 if [ ${ADAPTER_FASTA} = "Default_adapter" ]
 then
