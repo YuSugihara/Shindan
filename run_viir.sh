@@ -568,7 +568,7 @@ blastn -db ${OUT_DIR}/90_blastn/blastndb/`basename ${BLASTNDB_FASTA}` \
        -outfmt "6 qseqid sacc stitle evalue bitscore length pident qcovs" | \
 awk -F"\t" '$8 >= 40' > blastn_result.tsv
 
-cut -f 1 blastn_result.tsv > blastn_result.isoform_list.txt
+cut -f 1 blastn_result.tsv  | sort | uniq > blastn_result.isoform_list.txt
 
 if [ `cat blastn_result.isoform_list.txt | wc -l` -gt 0 ]
 then
