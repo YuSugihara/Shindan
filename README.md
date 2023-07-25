@@ -2,14 +2,14 @@
 #### Version 0.0.1
 
 ## Table of contents
-- [What is ViiR?](#What-is-ViiR)
-- [Installation](#Installation)
-  + [Dependencies](#Dependencies)
-  + [Installation via bioconda](#Installation-via-bioconda)
-- [Usage](#Usage)
-  + [Example 1 : Run ViiR with default settings](#Example-1--Run-ViiR-with-default-settings)
-  + [Example 2 : Run ViiR with more threads and CPU memories](#Example-1--Run-ViiR-with-more-threads-and-CPU-memories)
-  + [Example 3 : Run ViiR with strand specific library](#Example-1--Run-ViiR-with-strand-specific-library)
+- [What is ViiR?](#what-is-viir)
+- [Installation](#installation)
+  + [Dependencies](#dependencies)
+  + [Installation](#installation)
+- [Usage](#usage)
+  + [Example 1 : Run ViiR with default settings](#example-1--run-viir-with-default-settings)
+  + [Example 2 : Run ViiR with more threads and CPU memories](#example-2--run-viir-with-more-threads-and-cpu-memories)
+  + [Example 3 : Run ViiR with strand specific library](#example-3--run-viir-with-strand-specific-library)
 
 
 ## What is ViiR?
@@ -33,7 +33,7 @@ ViiR is a software for 'Virus identification independent of Reference sequence'.
 - [Biopython](https://biopython.org)
 
 
-### Installation via bioconda
+### Installation
 ViiR and its dependencies are easily installed via [bioconda](https://bioconda.github.io/index.html) like below:
 
 ```
