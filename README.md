@@ -37,7 +37,7 @@ ViiR is a software for 'Virus identification independent of Reference sequence'.
 ViiR and its dependencies are easily installed via [bioconda](https://bioconda.github.io/index.html) like below:
 
 ```
-conda create -n viir -c bioconda trinity hmmer wget samtools>=1.9
+conda create -n viir -c bioconda trinity hmmer wget samtools>=1.9 biopython bowtie barrnap
 conda activate viir
 conda install -c bioconda rsem bioconductor-deseq2 bioconductor-edger r>=4.1
 git clone https://github.com/YuSugihara/ViiR.git
